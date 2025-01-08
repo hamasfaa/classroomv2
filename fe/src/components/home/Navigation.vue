@@ -3,7 +3,9 @@
   <nav
     class="flex items-center justify-between p-10 text-light-teal w-full fixed top-0"
   >
-    <a href="#" class="font-modak text-3xl text-dark-teal">KelasKu</a>
+    <router-link to="/login" class="font-modak text-3xl text-dark-teal">
+      KelasKu
+    </router-link>
     <div class="hidden md:block">
       <ul class="flex space-x-6">
         <li>
@@ -12,9 +14,12 @@
           >
         </li>
         <li>
-          <a href="#" class="hover:-translate-y-1 transition text-lg px-3 py-2"
-            >Tentang</a
+          <router-link
+            to="/about"
+            class="hover:-translate-y-1 transition text-lg px-3 py-2"
           >
+            Tentang
+          </router-link>
         </li>
         <li>
           <a href="#" class="hover:-translate-y-1 transition text-lg px-3 py-2"
@@ -31,7 +36,7 @@
         </li>
       </ul>
     </div>
-    <div class="block md:hidden text-light-teal">
+    <div class="block md:hidden text-white">
       <span
         v-if="!isSidebarOpen"
         class="material-symbols-outlined"
@@ -53,13 +58,18 @@
     </div>
     <ul class="flex flex-col space-y-6 p-10 text-white">
       <li>
-        <a href="#" class="hover:-translate-y-1 transition text-lg">Tentang</a>
-      </li>
-      <li>
         <a href="#" class="hover:-translate-y-1 transition text-lg">Docs</a>
       </li>
       <li>
-        <a href="#" class="hover:-translate-y-1 transition text-lg">Tentang</a>
+        <router-link
+          to="/about"
+          class="hover:-translate-y-1 transition text-lg"
+        >
+          Tentang
+        </router-link>
+      </li>
+      <li>
+        <a href="#" class="hover:-translate-y-1 transition text-lg">Bantuan</a>
       </li>
       <li>
         <router-link

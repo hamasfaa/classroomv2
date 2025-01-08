@@ -1,15 +1,15 @@
+<script setup>
+import ContentAbout from "@/components/home/ContentAbout.vue";
+import Left from "@/components/home/Left.vue";
+import Navigation from "@/components/home/Navigation.vue";
+</script>
+
 <template>
-  <div class="about">
-    <h1>This is an about page</h1>
-  </div>
+  <section class="flex flex-col md:flex-row h-screen">
+    <Navigation />
+    <Left />
+    <ContentAbout />
+  </section>
 </template>
 
-<style>
-@media (min-width: 1024px) {
-  .about {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-  }
-}
-</style>
+<script></script>
