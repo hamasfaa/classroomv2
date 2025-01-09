@@ -10,7 +10,7 @@
       >
         Siap belajar? Masuk sekarang!
       </h1>
-      <form method="POST" action="login.php" id="loginForm">
+      <form @submit.prevent="handleLogin">
         <div class="mb-2 w-full md:mb-4">
           <h2 class="text-lg mb-1 md:text-xl md:mb-2">Email</h2>
           <div class="flex items-center border p-2 w-full rounded md:p-4">
@@ -19,8 +19,7 @@
             </span>
             <input
               type="email"
-              name="email"
-              id=""
+              v-model="email"
               placeholder="Masukkan Email Anda"
               class="flex-1 outline-none"
             />
@@ -34,8 +33,7 @@
             </span>
             <input
               :type="isVisible ? 'text' : 'password'"
-              name="password"
-              id="password"
+              v-model="password"
               placeholder="Masukkan Password Anda"
               class="flex-1 outline-none"
             />
@@ -49,10 +47,12 @@
         </div>
         <button
           class="bg-light-teal text-white text-lg px-4 py-2 rounded border border-transparent hover:bg-white hover:border-light-teal hover:text-light-teal w-full"
+          type="submit"
         >
           Masuk
         </button>
       </form>
+      <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
     </div>
   </div>
 </template>
@@ -61,12 +61,41 @@
 export default {
   data() {
     return {
+      email: "",
+      password: "",
+      errorMessage: "",
       isVisible: false,
     };
   },
   methods: {
     toggleVisible() {
       this.isVisible = !this.isVisible;
+    },
+    async handleLogin() {
+      try {
+        const response = await fetch("http://localhost:8080/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: new URLSearchParams({
+            email: this.email,
+            password: this.password,
+          }),
+        });
+        const result = await response.json();
+        if (!response.ok) {
+          this.errorMessage = result.error || "Terjadi kesalahan login";
+          return;
+        }
+        if (result.role === "dosen") {
+          this.$router.push("/dosen");
+        } else if (result.role === "mahasiswa") {
+          this.$router.push("/mahasiswa");
+        } else {
+          this.errorMessage = "Role Tidak Dikenali";
+        }
+      } catch (error) {
+        this.errorMessage = "Terjadi Kesalahan: " + error;
+      }
     },
   },
 };
