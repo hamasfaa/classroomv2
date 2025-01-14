@@ -6,7 +6,7 @@ import (
 )
 
 type User struct {
-	U_ID           uint64
+	U_ID           string
 	U_Nama         string
 	U_Email        string
 	U_Password     string
@@ -14,5 +14,5 @@ type User struct {
 	U_TanggalLahir time.Time
 	U_NoPonsel     sql.NullString
 	U_Alamat       sql.NullString
-	U_Foto         sql.NullString
+	U_Foto         string
 }

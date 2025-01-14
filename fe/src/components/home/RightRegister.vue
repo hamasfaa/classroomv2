@@ -10,7 +10,7 @@
       >
         Siap belajar? Daftar sekarang!
       </h1>
-      <form method="POST" action="register.php" id="registerForm">
+      <form @submit.prevent="handleRegister">
         <div class="mb-4 w-full md:mb-4">
           <h2 class="text-lg mb-1 md:text-xl md:mb-2">Nama</h2>
           <div class="flex items-center border md:p-4 p-2 w-full rounded">
@@ -19,8 +19,7 @@
             </span>
             <input
               type="text"
-              name="name"
-              id="name"
+              v-model="name"
               placeholder="Masukkan Nama Anda"
               class="flex-1 outline-none"
             />
@@ -32,12 +31,7 @@
             <span class="material-symbols-outlined mr-2 text-light-teal">
               calendar_today
             </span>
-            <input
-              type="date"
-              id="dob"
-              name="dob"
-              class="flex-1 outline-none"
-            />
+            <input type="date" v-model="dob" class="flex-1 outline-none" />
           </div>
         </div>
         <div class="mb-4 w-full md:mb-4">
@@ -45,16 +39,14 @@
           <div class="flex items-center space-x-4">
             <input
               type="radio"
-              id="dosen"
-              name="role"
+              v-model="role"
               value="dosen"
               class="h-5 w-5 text-light-teal border-light-teal rounded-md focus:ring-2 focus:ring-light-teal"
             />
             <label for="Dosen" class="text-lg">Dosen</label>
             <input
               type="radio"
-              id="mahasiswa"
-              name="role"
+              v-model="role"
               value="mahasiswa"
               class="h-5 w-5 text-light-teal border-light-teal rounded-md focus:ring-2 focus:ring-light-teal"
             />
@@ -69,8 +61,7 @@
             </span>
             <input
               type="email"
-              name="email"
-              id="email"
+              v-model="email"
               placeholder="Masukkan Email Anda"
               class="flex-1 outline-none"
             />
@@ -84,8 +75,7 @@
             </span>
             <input
               :type="isVisible ? 'text' : 'password'"
-              name="password"
-              id="password"
+              v-model="password"
               placeholder="Masukkan Password Anda"
               class="flex-1 outline-none"
             />
@@ -105,8 +95,7 @@
             </span>
             <input
               :type="isVisible ? 'text' : 'password'"
-              name="confirmPassword"
-              id="confirmPassword"
+              v-model="confirmPassword"
               placeholder="Konfirmasi Password Anda"
               class="flex-1 outline-none"
             />
@@ -124,6 +113,7 @@
           Daftar
         </button>
       </form>
+      <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
     </div>
   </div>
 </template>
@@ -132,6 +122,13 @@
 export default {
   data() {
     return {
+      name: "",
+      dob: "",
+      role: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+      errorMessage: "",
       isVisible: false,
       isVisibleConfirm: false,
     };
@@ -142,6 +139,30 @@ export default {
     },
     toggleVisibleConfirm() {
       this.isVisibleConfirm = !this.isVisibleConfirm;
+    },
+    async handleRegister() {
+      try {
+        const response = await fetch("http://localhost:8080/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: new URLSearchParams({
+            name: this.name,
+            dob: this.dob,
+            role: this.role,
+            email: this.email,
+            password: this.password,
+            confirmPassword: this.confirmPassword,
+          }),
+        });
+        const result = await response.json();
+        if (!response.ok) {
+          this.errorMessage = result.error || "Terjadi kesalahan register";
+          return;
+        }
+        this.$router.push("/login");
+      } catch (error) {
+        this.errorMessage = "Terjadi Kesalahan: " + error;
+      }
     },
   },
 };
