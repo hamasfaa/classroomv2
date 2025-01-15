@@ -14,7 +14,8 @@ type loginResponse struct {
 }
 
 type registerResponse struct {
-	Error string `json:"error,omitempty"`
+	Error   string `json:"error,omitempty"`
+	Message string `json:"message,omitempty"`
 }
 
 func Login(w http.ResponseWriter, r *http.Request) {
@@ -23,6 +24,13 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
 	if r.Method == http.MethodOptions {
+		return
+	}
+
+	sess, err := session.GetSession(r, "user")
+	if err == nil && sess.Values["user_id"] != nil {
+		role := sess.Values["user_role"].(string)
+		http.Redirect(w, r, "/"+role, http.StatusSeeOther)
 		return
 	}
 
@@ -71,7 +79,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	user.U_NoPonsel = sql.NullString{String: noPonsel, Valid: true}
 	user.U_Alamat = sql.NullString{String: alamat, Valid: true}
 
-	sess, err := session.GetSession(r, "user")
+	sess, err = session.GetSession(r, "user")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -97,6 +105,13 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
 	if r.Method == http.MethodOptions {
+		return
+	}
+
+	sess, err := session.GetSession(r, "user")
+	if err == nil && sess.Values["user_id"] != nil {
+		role := sess.Values["user_role"].(string)
+		http.Redirect(w, r, "/"+role, http.StatusSeeOther)
 		return
 	}
 
@@ -142,7 +157,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 				}
 				w.WriteHeader(http.StatusOK)
 				json.NewEncoder(w).Encode(registerResponse{
-					Error: "Pendaftaran berhasil!",
+					Message: "Pendaftaran berhasil!",
 				})
 			}
 		}

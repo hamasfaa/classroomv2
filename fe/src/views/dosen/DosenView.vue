@@ -1,3 +1,7 @@
+<script setup>
+import Navigation from "@/components/main/Navigation.vue";
+</script>
+
 <template>
-  <div>dosen</div>
+  <Navigation />
 </template>
