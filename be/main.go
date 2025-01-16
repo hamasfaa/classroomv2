@@ -13,6 +13,7 @@ func main() {
 
 	http.HandleFunc("/login", usercontroller.Login)
 	http.HandleFunc("/register", usercontroller.Register)
+	http.HandleFunc("/logout", usercontroller.Logout)
 	http.HandleFunc("/whoami", usercontroller.CurrentUser)
 
 	http.HandleFunc("/dosen/", dosencontroller.Index)

@@ -169,6 +169,23 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func Logout(w http.ResponseWriter, r *http.Request) {
+	sess, err := session.GetSession(r, "user")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	sess.Options.MaxAge = -1
+	err = session.SaveSession(w, r, sess)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	http.Redirect(w, r, "/login", http.StatusSeeOther)
+}
+
 func CurrentUser(w http.ResponseWriter, r *http.Request) {
 	sess, err := session.GetSession(r, "user")
 	if err != nil || sess.Values["user_id"] == nil {
