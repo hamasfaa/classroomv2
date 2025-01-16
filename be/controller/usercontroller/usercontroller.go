@@ -18,6 +18,11 @@ type registerResponse struct {
 	Message string `json:"message,omitempty"`
 }
 
+type currentUserResponse struct {
+	UserID string `json:"user_id,omitempty"`
+	Error  string `json:"error,omitempty"`
+}
+
 func Login(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS")
@@ -162,4 +167,19 @@ func Register(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	}
+}
+
+func CurrentUser(w http.ResponseWriter, r *http.Request) {
+	sess, err := session.GetSession(r, "user")
+	if err != nil || sess.Values["user_id"] == nil {
+		json.NewEncoder(w).Encode(currentUserResponse{
+			Error: "Tidak ada pengguna yang login",
+		})
+		return
+	}
+
+	userID := sess.Values["user_id"].(string)
+	json.NewEncoder(w).Encode(currentUserResponse{
+		UserID: userID,
+	})
 }
