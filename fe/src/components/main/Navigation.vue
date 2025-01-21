@@ -7,7 +7,7 @@
         KelasKu
       </router-link>
       <!-- Ikon Hamburger untuk Mobile -->
-      <div class="md:hidden">
+      <div class="md:hidden" @click="toggleSidebarMobile">
         <span class="material-symbols-outlined text-3xl cursor-pointer">
           menu
         </span>
@@ -37,10 +37,17 @@
   <div
     :class="[
       'fixed top-0 right-0 h-full bg-dark-teal transform duration-300 z-50 bg-opacity-90 shadow-lg flex flex-col transition-all',
-      isSidebarOpen ? 'w-20' : 'md:w-1/6',
-      isSidebarOpen ? 'translate-x-0' : 'translate-x-full md:translate-x-0',
+      isSidebarOpen ? 'md:w-20' : 'md:w-1/6 md:translate-x-0',
+      isSidebarMobileOpen ? 'w-3/4' : 'w-0',
     ]"
   >
+    <div
+      class="text-white px-6 py-2 cursor-pointer flex md:hidden"
+      @click="toggleSidebarMobile"
+    >
+      <span class="material-symbols-outlined text-3xl"> close </span>
+    </div>
+
     <div
       class="text-white px-6 py-2 cursor-pointer md:flex hidden"
       @click="toggleSidebar"
