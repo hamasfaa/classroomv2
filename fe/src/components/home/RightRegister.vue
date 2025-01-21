@@ -144,8 +144,8 @@ export default {
       try {
         const response = await fetch("http://localhost:8080/register", {
           method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          body: new URLSearchParams({
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
             name: this.name,
             dob: this.dob,
             role: this.role,

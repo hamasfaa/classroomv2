@@ -1,4 +1,80 @@
-<template></template>
+<template>
+  <nav
+    class="flex flex-col md:flex-row md:items-center justify-between p-10 text-light-teal w-full"
+  >
+    <div class="flex items-center justify-between w-full md:w-auto">
+      <router-link to="/login" class="font-modak text-4xl text-dark-teal">
+        KelasKu
+      </router-link>
+      <!-- Ikon Hamburger untuk Mobile -->
+      <div class="md:hidden">
+        <span class="material-symbols-outlined text-3xl cursor-pointer">
+          menu
+        </span>
+      </div>
+    </div>
+    <div class="w-full mt-4 md:mt-0 md:flex md:justify-center">
+      <div class="relative w-full md:w-2/5 lg:w-1/4">
+        <div class="flex items-center border rounded p-2 md:p-4">
+          <span class="material-symbols-outlined mr-2 text-light-teal">
+            search
+          </span>
+          <input
+            type="text"
+            name="search"
+            id="pencarian"
+            placeholder="Cari kelas, tugas, atau absen..."
+            class="flex-1 outline-none"
+          />
+        </div>
+        <div
+          id="hasilPencarian"
+          class="absolute w-full mt-2 bg-white border rounded shadow-lg z-50 hidden"
+        ></div>
+      </div>
+    </div>
+  </nav>
+  <div
+    :class="[
+      'fixed top-0 right-0 h-full bg-dark-teal transform duration-300 z-50 bg-opacity-90 shadow-lg flex flex-col transition-all',
+      isSidebarOpen ? 'w-20' : 'md:w-1/6',
+      isSidebarOpen ? 'translate-x-0' : 'translate-x-full md:translate-x-0',
+    ]"
+  >
+    <div
+      class="text-white px-6 py-2 cursor-pointer md:flex hidden"
+      @click="toggleSidebar"
+    >
+      <span class="material-symbols-outlined text-3xl">menu</span>
+    </div>
+    <div class="font-poppins">
+      <ul
+        class="flex flex-col space-y-6 px-6 pt-2 pb-6 text-white justify-center"
+      >
+        <li v-for="item in menuItems" :key="item.name">
+          <router-link
+            :to="item.to"
+            class="flex items-center hover:-translate-y-1 transition menu-item relative gap-4"
+          >
+            <span class="material-symbols-outlined text-light-teal text-3xl">{{
+              item.icon
+            }}</span>
+            <span v-if="!isSidebarOpen" class="opacity-100 text-xl">{{
+              item.name
+            }}</span>
+          </router-link>
+        </li>
+      </ul>
+    </div>
+    <div class="flex items-center space-x-4 p-6 mt-auto">
+      <img src="" alt="Foto Profil" class="rounded-xl w-12 h-12" />
+      <div v-if="!isSidebarOpen" class="flex flex-col">
+        <span class="font-bold text-xl text-white">JOKO</span>
+        <span class="text-white">Dosen</span>
+      </div>
+    </div>
+  </div>
+</template>
 
 <script>
 export default {
@@ -6,16 +82,22 @@ export default {
     return {
       isSidebarOpen: false,
       isSidebarMobileOpen: false,
+      menuItems: [
+        { name: "Beranda", to: "/dosen/", icon: "home" },
+        { name: "Kelas", to: "/dosen/class", icon: "school" },
+        { name: "Tugas", to: "/dosen/task", icon: "task" },
+        { name: "Presensi", to: "/dosen/", icon: "overview" },
+        { name: "Pengaturan", to: "/dosen/settings", icon: "settings" },
+        { name: "Keluar", to: "/dosen/logout", icon: "logout" },
+      ],
     };
   },
   methods: {
     toggleSidebar() {
       this.isSidebarOpen = !this.isSidebarOpen;
-      console.log(this.isSidebarOpen);
     },
     toggleSidebarMobile() {
       this.isSidebarMobileOpen = !this.isSidebarMobileOpen;
-      console.log(this.isSidebarMobileOpen);
     },
   },
 };
