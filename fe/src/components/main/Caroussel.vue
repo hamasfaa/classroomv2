@@ -1,10 +1,5 @@
 <template>
-  <div
-    :class="[
-      'flex flex-col h-screen',
-      GENERAL_STORE.isSidebarOpen ? 'mr-[70px]' : 'md:w-5/6 w-full',
-    ]"
-  >
+  <div>
     <div id="default-carousel" class="relative w-full" data-carousel="slide">
       <!-- Carousel wrapper -->
       <div class="relative h-56 overflow-hidden rounded-lg md:h-96">
