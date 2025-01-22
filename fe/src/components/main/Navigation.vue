@@ -7,7 +7,7 @@
         KelasKu
       </router-link>
       <!-- Ikon Hamburger untuk Mobile -->
-      <div class="md:hidden" @click="toggleSidebarMobile">
+      <div class="md:hidden" @click="GENERAL_STORE.toggleSidebarMobile">
         <span class="material-symbols-outlined text-3xl cursor-pointer">
           menu
         </span>
@@ -37,20 +37,20 @@
   <div
     :class="[
       'fixed top-0 right-0 h-full bg-dark-teal transform duration-300 z-50 bg-opacity-90 shadow-lg flex flex-col transition-all',
-      isSidebarOpen ? 'md:w-20' : 'md:w-1/6 md:translate-x-0',
-      isSidebarMobileOpen ? 'w-3/4' : 'w-0',
+      GENERAL_STORE.isSidebarOpen ? 'md:w-20' : 'md:w-1/6 md:translate-x-0',
+      GENERAL_STORE.isSidebarMobileOpen ? 'w-3/4' : 'w-0',
     ]"
   >
     <div
       class="text-white px-6 py-2 cursor-pointer flex md:hidden"
-      @click="toggleSidebarMobile"
+      @click="GENERAL_STORE.toggleSidebarMobile"
     >
       <span class="material-symbols-outlined text-3xl"> close </span>
     </div>
 
     <div
       class="text-white px-6 py-2 cursor-pointer md:flex hidden"
-      @click="toggleSidebar"
+      @click="GENERAL_STORE.toggleSidebar"
     >
       <span class="material-symbols-outlined text-3xl">menu</span>
     </div>
@@ -66,16 +66,18 @@
             <span class="material-symbols-outlined text-light-teal text-3xl">{{
               item.icon
             }}</span>
-            <span v-if="!isSidebarOpen" class="opacity-100 text-xl">{{
-              item.name
-            }}</span>
+            <span
+              v-if="!GENERAL_STORE.isSidebarOpen"
+              class="opacity-100 text-xl"
+              >{{ item.name }}</span
+            >
           </router-link>
         </li>
       </ul>
     </div>
     <div class="flex items-center space-x-4 p-6 mt-auto">
       <img src="" alt="Foto Profil" class="rounded-xl w-12 h-12" />
-      <div v-if="!isSidebarOpen" class="flex flex-col">
+      <div v-if="!GENERAL_STORE.isSidebarOpen" class="flex flex-col">
         <span class="font-bold text-xl text-white">JOKO</span>
         <span class="text-white">Dosen</span>
       </div>
@@ -84,11 +86,18 @@
 </template>
 
 <script>
+import { useGeneralStore } from "@/stores/generalStore";
+
 export default {
+  setup() {
+    const GENERAL_STORE = useGeneralStore();
+
+    return {
+      GENERAL_STORE,
+    };
+  },
   data() {
     return {
-      isSidebarOpen: false,
-      isSidebarMobileOpen: false,
       menuItems: [
         { name: "Beranda", to: "/dosen/", icon: "home" },
         { name: "Kelas", to: "/dosen/class", icon: "school" },
@@ -98,14 +107,6 @@ export default {
         { name: "Keluar", to: "/dosen/logout", icon: "logout" },
       ],
     };
-  },
-  methods: {
-    toggleSidebar() {
-      this.isSidebarOpen = !this.isSidebarOpen;
-    },
-    toggleSidebarMobile() {
-      this.isSidebarMobileOpen = !this.isSidebarMobileOpen;
-    },
   },
 };
 </script>
