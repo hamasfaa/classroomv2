@@ -1,6 +1,7 @@
 <script setup>
 import { RouterLink, RouterView } from "vue-router";
 import { ref, onMounted, onUnmounted } from "vue";
+import { initFlowbite } from "flowbite";
 
 const isMobile = ref(window.innerWidth <= 768);
 
@@ -14,6 +15,7 @@ function handleResize() {
 
 onMounted(() => {
   window.addEventListener("resize", handleResize);
+  initFlowbite();
 });
 
 onUnmounted(() => {
