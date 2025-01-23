@@ -4,6 +4,8 @@ import LoginView from '@/views/LoginView.vue'
 import RegisterView from '@/views/RegisterView.vue'
 import DosenView from '@/views/dosen/DosenView.vue'
 import MahasiswaView from '@/views/mahasiswa/MahasiswaView.vue'
+import DosenClassView from '@/views/dosen/DosenClassView.vue'
+import DosenAddClassView from '@/views/dosen/DosenAddClassView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -30,6 +32,16 @@ const router = createRouter({
       path: '/dosen',
       name: 'dosen',
       component: DosenView
+    },
+    {
+      path: '/dosen/class',
+      name: 'dosen-class',
+      component: DosenClassView
+    },
+    {
+      path: '/dosen/addClass',
+      name: 'add-class',
+      component: DosenAddClassView
     },
     {
       path: '/mahasiswa',
