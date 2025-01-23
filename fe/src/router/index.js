@@ -6,6 +6,9 @@ import DosenView from '@/views/dosen/DosenView.vue'
 import MahasiswaView from '@/views/mahasiswa/MahasiswaView.vue'
 import DosenClassView from '@/views/dosen/DosenClassView.vue'
 import DosenAddClassView from '@/views/dosen/DosenAddClassView.vue'
+import DosenTaskView from '@/views/dosen/DosenTaskView.vue'
+import DosenManageTaskView from '@/views/dosen/DosenManageTaskView.vue'
+import DosenAddTaskView from '@/views/dosen/DosenAddTaskView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -42,6 +45,21 @@ const router = createRouter({
       path: '/dosen/addClass',
       name: 'add-class',
       component: DosenAddClassView
+    },
+    {
+      path: '/dosen/task',
+      name: 'dosen-task',
+      component: DosenTaskView
+    },
+    {
+      path: '/dosen/manageTask',
+      name: 'manage-task',
+      component: DosenManageTaskView
+    },
+    {
+      path: '/dosen/addTask',
+      name: 'add-task',
+      component: DosenAddTaskView
     },
     {
       path: '/mahasiswa',
