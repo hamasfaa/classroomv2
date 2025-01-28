@@ -102,7 +102,7 @@ export default {
         { name: "Beranda", to: "/dosen/", icon: "home" },
         { name: "Kelas", to: "/dosen/class", icon: "school" },
         { name: "Tugas", to: "/dosen/task", icon: "task" },
-        { name: "Presensi", to: "/dosen/", icon: "overview" },
+        { name: "Presensi", to: "/dosen/attendance", icon: "overview" },
         { name: "Pengaturan", to: "/dosen/settings", icon: "settings" },
         { name: "Keluar", to: "/dosen/logout", icon: "logout" },
       ],

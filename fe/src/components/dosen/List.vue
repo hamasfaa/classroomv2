@@ -15,9 +15,16 @@
             <td class="p-4">SISOP</td>
             <td class="p-4">
               <router-link
+                v-if="List === 'Class'"
                 to="/dosen/manageTask"
                 class="bg-dark-teal text-white text-lg px-4 py-2 rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal transition duration-300"
                 >Kelola Tugas</router-link
+              >
+              <router-link
+                v-else-if="List === 'Attendance'"
+                to="/dosen/manageAttendance"
+                class="bg-dark-teal text-white text-lg px-4 py-2 rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal transition duration-300"
+                >Kelola Presensi</router-link
               >
             </td>
           </tr>
@@ -26,3 +33,14 @@
     </div>
   </div>
 </template>
+
+<script>
+export default {
+  props: {
+    List: {
+      type: String,
+      default: "Class",
+    },
+  },
+};
+</script>

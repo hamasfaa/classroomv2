@@ -1,8 +1,8 @@
-<script setup lang="ts">
-import BannerTask from "@/components/dosen/BannerTask.vue";
+<script setup>
 import Navigation from "@/components/main/Navigation.vue";
-import List from "@/components/dosen/List.vue";
 import { useGeneralStore } from "@/stores/generalStore";
+import BannerAttendanceClass from "@/components/dosen/BannerAttendanceClass.vue";
+import EditAttendance from "@/components/dosen/EditAttendance.vue";
 
 const GENERAL_STORE = useGeneralStore();
 </script>
@@ -15,7 +15,7 @@ const GENERAL_STORE = useGeneralStore();
       GENERAL_STORE.isSidebarOpen ? 'mr-[82px]' : 'md:w-5/6 w-full',
     ]"
   >
-    <BannerTask />
-    <List List="Class" />
+    <BannerAttendanceClass :add="false" />
+    <EditAttendance />
   </div>
 </template>

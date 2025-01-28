@@ -8,7 +8,11 @@ import DosenClassView from '@/views/dosen/DosenClassView.vue'
 import DosenAddClassView from '@/views/dosen/DosenAddClassView.vue'
 import DosenTaskView from '@/views/dosen/DosenTaskView.vue'
 import DosenManageTaskView from '@/views/dosen/DosenManageTaskView.vue'
+import DosenManageAttendanceView from '@/views/dosen/DosenManageAttendanceView.vue'
 import DosenAddTaskView from '@/views/dosen/DosenAddTaskView.vue'
+import DosenAttendanceView from '@/views/dosen/DosenAttendanceView.vue'
+import DosenAddAttendanceView from '@/views/dosen/DosenAddAttendanceView.vue'
+import DosenEditAttendanceView from '@/views/dosen/DosenEditAttendanceView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -60,6 +64,26 @@ const router = createRouter({
       path: '/dosen/addTask',
       name: 'add-task',
       component: DosenAddTaskView
+    },
+    {
+      path: '/dosen/attendance',
+      name: 'dosen-attendance',
+      component: DosenAttendanceView
+    },
+    {
+      path: '/dosen/manageAttendance',
+      name: 'manage-attendance',
+      component: DosenManageAttendanceView
+    },
+    {
+      path: '/dosen/addAttendance',
+      name: 'add-attendance',
+      component: DosenAddAttendanceView
+    },
+    {
+      path: '/dosen/editAttendance/:id',
+      name: 'edit-attendance',
+      component: DosenEditAttendanceView
     },
     {
       path: '/mahasiswa',
