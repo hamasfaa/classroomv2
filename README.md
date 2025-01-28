@@ -1,7 +1,3 @@
-Berikut contoh README singkat untuk proyek ClassroomV2 dengan frontend Vue.js dan backend Go:
-
----
-
 # ClassroomV2
 
 ClassroomV2 adalah aplikasi sederhana yang memfasilitasi pengelolaan kelas, murid, dan tugas secara online. Proyek ini memanfaatkan Vue.js sebagai frontend dan Go sebagai backend untuk kinerja yang cepat dan fungsionalitas yang fleksibel.
