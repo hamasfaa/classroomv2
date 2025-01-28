@@ -13,6 +13,7 @@ import DosenAddTaskView from '@/views/dosen/DosenAddTaskView.vue'
 import DosenAttendanceView from '@/views/dosen/DosenAttendanceView.vue'
 import DosenAddAttendanceView from '@/views/dosen/DosenAddAttendanceView.vue'
 import DosenEditAttendanceView from '@/views/dosen/DosenEditAttendanceView.vue'
+import SettingView from '@/views/SettingView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -89,6 +90,11 @@ const router = createRouter({
       path: '/mahasiswa',
       name: 'mahasiswa',
       component: MahasiswaView
+    },
+    {
+      path: '/settings',
+      name: 'settings',
+      component: SettingView
     }
   ],
 })

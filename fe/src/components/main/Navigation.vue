@@ -103,7 +103,7 @@ export default {
         { name: "Kelas", to: "/dosen/class", icon: "school" },
         { name: "Tugas", to: "/dosen/task", icon: "task" },
         { name: "Presensi", to: "/dosen/attendance", icon: "overview" },
-        { name: "Pengaturan", to: "/dosen/settings", icon: "settings" },
+        { name: "Pengaturan", to: "/settings", icon: "settings" },
         { name: "Keluar", to: "/dosen/logout", icon: "logout" },
       ],
     };
