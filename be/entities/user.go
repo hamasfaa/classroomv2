@@ -1,18 +1,15 @@
 package entities
 
-import (
-	"database/sql"
-	"time"
-)
+import "time"
 
 type User struct {
-	U_ID           string
-	U_Nama         string
-	U_Email        string
-	U_Password     string
-	U_Role         string
-	U_TanggalLahir time.Time
-	U_NoPonsel     sql.NullString
-	U_Alamat       sql.NullString
-	U_Foto         string
+	UID           string    `gorm:"primary_key" json:"u_id"`
+	UNama         string    `json:"u_nama"`
+	UEmail        string    `json:"u_email"`
+	UPassword     string    `json:"u_password"`
+	URole         string    `json:"u_role"`
+	UTanggalLahir time.Time `json:"u_tanggal_lahir"`
+	UNoPonsel     string    `json:"u_no_ponsel"`
+	UAlamat       string    `json:"u_alamat"`
+	UFoto         string    `json:"u_foto"`
 }
