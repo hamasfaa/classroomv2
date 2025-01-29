@@ -1,23 +1,19 @@
 package main
 
 import (
-	"be/config"
-	"be/controller/dosencontroller"
-	"be/controller/usercontroller"
-	"log"
-	"net/http"
+	"be/entities"
+	"fmt"
+	"io"
+	"os"
+
+	"ariga.io/atlas-provider-gorm/gormschema"
 )
 
 func main() {
-	config.ConnectDB()
-
-	http.HandleFunc("/login", usercontroller.Login)
-	http.HandleFunc("/register", usercontroller.Register)
-	http.HandleFunc("/logout", usercontroller.Logout)
-	http.HandleFunc("/whoami", usercontroller.CurrentUser)
-
-	http.HandleFunc("/dosen/", dosencontroller.Index)
-
-	log.Println("Starting server on http://localhost:8080")
-	http.ListenAndServe(":8080", nil)
+	stmts, err := gormschema.New("mysql").Load(&entities.AbsenMahasiswa{}, &entities.UserKelas{}, &entities.User{}, &entities.Kelas{}, &entities.AbsenDosen{}, &entities.TugasDosen{}, &entities.TugasMahasiswa{})
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "failed to load gorm schema: %v\n", err)
+		os.Exit(1)
+	}
+	io.WriteString(os.Stdout, stmts)
 }

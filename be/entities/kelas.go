@@ -3,9 +3,9 @@ package entities
 import "time"
 
 type Kelas struct {
-	KID            string    `gorm:"primary_key" json:"k_id"`
-	KMataKuliah    string    `json:"k_mata_kuliah"`
-	KNamaKelas     string    `json:"k_nama_kelas"`
-	KTanggalDibuat time.Time `json:"k_tanggal_dibuat"`
-	KKodeKelas     string    `json:"k_kode_kelas"`
+	KID            string    `gorm:"primaryKey;type:varchar(255)" json:"k_id"`
+	KMataKuliah    string    `gorm:"type:varchar(50)" json:"k_mata_kuliah"`
+	KNamaKelas     string    `gorm:"type:varchar(50)" json:"k_nama_kelas"`
+	KTanggalDibuat time.Time `gorm:"type:date" json:"k_tanggal_dibuat"`
+	KKodeKelas     string    `gorm:"type:char(6)" json:"k_kode_kelas"`
 }
