@@ -38,5 +38,5 @@ ClassroomV2 adalah aplikasi sederhana yang memfasilitasi pengelolaan kelas, muri
      go run main.go
 
 4. **Akses Aplikasi**
-   - Buka http://localhost:8080 (atau port yang telah ditentukan di server Go) di browser untuk API.
+   - Buka http://localhost:3000 (atau port yang telah ditentukan di server Go) di browser untuk API.
    - Buka http://localhost:5173 (atau port yang ditentukan di Vue) untuk antarmuka pengguna.
