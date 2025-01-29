@@ -1,19 +1,25 @@
 package main
 
 import (
-	"be/entities"
-	"fmt"
-	"io"
-	"os"
+	"be/config"
 
-	"ariga.io/atlas-provider-gorm/gormschema"
+	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/logger"
 )
 
 func main() {
-	stmts, err := gormschema.New("mysql").Load(&entities.AbsenMahasiswa{}, &entities.UserKelas{}, &entities.User{}, &entities.Kelas{}, &entities.AbsenDosen{}, &entities.TugasDosen{}, &entities.TugasMahasiswa{})
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "failed to load gorm schema: %v\n", err)
-		os.Exit(1)
-	}
-	io.WriteString(os.Stdout, stmts)
+	app := fiber.New()
+
+	// config.Migration()
+
+	config.ConnectDB()
+
+	app.Use(logger.New())
+
+	app.Get("/", func(c *fiber.Ctx) error {
+		return c.SendString("Hello, World!")
+	})
+
+	app.Listen(":3000")
+
 }

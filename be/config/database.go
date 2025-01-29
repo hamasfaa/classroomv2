@@ -1,21 +1,24 @@
 package config
 
 import (
-	"database/sql"
-	"log"
+	"fmt"
 
 	_ "github.com/go-sql-driver/mysql"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
-var DB *sql.DB
+func ConnectDB() (*gorm.DB, error) {
+	dsn := "root:pass@tcp(127.0.0.1:3306)/classroom?charset=utf8mb4&parseTime=True&loc=Local"
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
-func ConnectDB() {
-	db, err := sql.Open("mysql", "root:@/fp?parseTime=true")
-	if err != nil {
-		println("Error connecting to database")
-		panic(err)
+	if db != nil {
+		fmt.Println("Connected to database")
 	}
 
-	log.Println("Connected to database")
-	DB = db
+	if err != nil {
+		fmt.Println("Failed to connect to database")
+	}
+
+	return db, err
 }
