@@ -15,6 +15,7 @@ import DosenAddAttendanceView from '@/views/dosen/DosenAddAttendanceView.vue'
 import DosenEditAttendanceView from '@/views/dosen/DosenEditAttendanceView.vue'
 import SettingView from '@/views/SettingView.vue'
 import { useAuthStore } from '@/stores/authStore'
+import AccessDeniedView from '@/views/AccessDeniedView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -117,6 +118,11 @@ const router = createRouter({
       path: '/settings',
       name: 'settings',
       component: SettingView
+    },
+    {
+      path: '/access-denied',
+      name: 'access-denied',
+      component: AccessDeniedView
     }
   ],
 })
@@ -128,12 +134,16 @@ router.beforeEach((to, from, next) => {
     if (!AUTH_STORE.token) {
       next({ name: 'login' });
     } else if (to.meta.role && AUTH_STORE.role !== to.meta.role) {
-      next({ name: 'login' });
+      next({ name: 'access-denied' });
     } else {
       next();
     }
   } else {
-    next();
+    if (AUTH_STORE.role && to.name === 'login') {
+      next({ name: AUTH_STORE.role });
+    } else {
+      next();
+    }
   }
 })
 
