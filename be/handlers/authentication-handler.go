@@ -26,6 +26,10 @@ func (h *AuthenticationHandler) RegisterUser(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
 	}
 
+	if user.UNama == "" || user.UEmail == "" || user.UPassword == "" || user.URole == "" || user.UTanggalLahir.IsZero() {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Semua field harus diisi"})
+	}
+
 	newUUID, err := uuid.NewRandom()
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -47,7 +51,10 @@ func (h *AuthenticationHandler) RegisterUser(c *fiber.Ctx) error {
 	}
 
 	user.UPassword = ""
-	return c.Status(fiber.StatusCreated).JSON(user)
+	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
+		"message": "Registrasi berhasil",
+		"user":    user,
+	})
 }
 
 func (h *AuthenticationHandler) LoginUser(c *fiber.Ctx) error {

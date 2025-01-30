@@ -109,17 +109,26 @@
         </div>
         <button
           class="bg-light-teal text-white text-lg px-4 py-2 rounded border border-transparent hover:bg-white hover:border-light-teal hover:text-light-teal w-full"
+          type="submit"
         >
           Daftar
         </button>
       </form>
-      <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
+      <div v-if="errorMessage" class="text-red-700">{{ errorMessage }}</div>
     </div>
   </div>
 </template>
 
 <script>
+import { useAuthStore } from "@/stores/authStore";
+import { useRouter } from "vue-router";
+
 export default {
+  setup() {
+    const AUTH_STORE = useAuthStore();
+    const ROUTER = useRouter();
+    return { AUTH_STORE, ROUTER };
+  },
   data() {
     return {
       name: "",
@@ -141,27 +150,22 @@ export default {
       this.isVisibleConfirm = !this.isVisibleConfirm;
     },
     async handleRegister() {
-      try {
-        const response = await fetch("http://localhost:8080/register", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            name: this.name,
-            dob: this.dob,
-            role: this.role,
-            email: this.email,
-            password: this.password,
-            confirmPassword: this.confirmPassword,
-          }),
-        });
-        const result = await response.json();
-        if (!response.ok) {
-          this.errorMessage = result.error || "Terjadi kesalahan register";
-          return;
-        }
-        this.$router.push("/login");
-      } catch (error) {
-        this.errorMessage = "Terjadi Kesalahan: " + error;
+      if (this.password !== this.confirmPassword) {
+        this.errorMessage = "Password tidak sama";
+        return;
+      }
+
+      await this.AUTH_STORE.register(
+        this.name,
+        this.dob,
+        this.role,
+        this.email,
+        this.password
+      );
+      if (this.AUTH_STORE.errorMessage) {
+        this.errorMessage = this.AUTH_STORE.errorMessage;
+      } else {
+        this.ROUTER.push({ name: "login" });
       }
     },
   },

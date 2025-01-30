@@ -87,6 +87,7 @@
 </template>
 
 <script>
+import router from "@/router";
 import { useAuthStore } from "@/stores/authStore";
 import { useGeneralStore } from "@/stores/generalStore";
 
@@ -96,7 +97,9 @@ export default {
     const AUTH_STORE = useAuthStore();
 
     const handleLogout = () => {
+      console.log("Logout");
       AUTH_STORE.logout();
+      router.push({ name: "login" });
     };
 
     return {

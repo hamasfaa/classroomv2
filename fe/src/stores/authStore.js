@@ -32,11 +32,27 @@ export const useAuthStore = defineStore('auth', {
                 }
             }
         },
+        async register(name, dob, role, email, password) {
+            const isoDate = new Date(dob).toISOString();
+
+            try {
+                const response = await api.post('register/', { u_nama: name, u_tanggal_lahir: isoDate, u_role: role, u_email: email, u_password: password });
+                this.user = response.data;
+                this.errorMessage = null;
+            } catch (error) {
+                if (error.response && error.response.data) {
+                    this.errorMessage = error.response.data.error;
+                } else {
+                    this.errorMessage = "An error occurred during registration.";
+                }
+            }
+        },
         logout() {
+            localStorage.removeItem('token');
+            console.log("logout");
             this.user = null;
             this.token = null;
             this.role = null;
-            localStorage.removeItem('token');
         },
         loadToken() {
             const token = localStorage.getItem('token');
