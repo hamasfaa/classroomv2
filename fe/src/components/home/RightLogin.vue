@@ -52,13 +52,21 @@
           Masuk
         </button>
       </form>
-      <div v-if="errorMessage" class="error">{{ errorMessage }}</div>
+      <div v-if="errorMessage" class="text-red-700">{{ errorMessage }}</div>
     </div>
   </div>
 </template>
 
 <script>
+import { useAuthStore } from "@/stores/authStore";
+import { useRouter } from "vue-router";
+
 export default {
+  setup() {
+    const AUTH_STORE = useAuthStore();
+    const ROUTER = useRouter();
+    return { AUTH_STORE, ROUTER };
+  },
   data() {
     return {
       email: "",
@@ -72,29 +80,13 @@ export default {
       this.isVisible = !this.isVisible;
     },
     async handleLogin() {
-      try {
-        const response = await fetch("http://localhost:8080/login", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            email: this.email,
-            password: this.password,
-          }),
-        });
-        const result = await response.json();
-        if (!response.ok) {
-          this.errorMessage = result.error || "Terjadi kesalahan login";
-          return;
-        }
-        if (result.role === "dosen") {
-          this.$router.push("/dosen");
-        } else if (result.role === "mahasiswa") {
-          this.$router.push("/mahasiswa");
-        } else {
-          this.errorMessage = "Role Tidak Dikenali";
-        }
-      } catch (error) {
-        this.errorMessage = "Terjadi Kesalahan: " + error;
+      await this.AUTH_STORE.login(this.email, this.password);
+      if (this.AUTH_STORE.role === "dosen") {
+        this.ROUTER.push({ name: "dosen" });
+      } else if (this.AUTH_STORE.role === "mahasiswa") {
+        this.ROUTER.push({ name: "mahasiswa" });
+      } else {
+        this.errorMessage = this.AUTH_STORE.errorMessage || "Login failed";
       }
     },
   },

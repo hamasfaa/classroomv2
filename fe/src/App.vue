@@ -1,4 +1,4 @@
-<script setup>
+<script>
 import { RouterLink, RouterView } from "vue-router";
 import { ref, onMounted, onUnmounted } from "vue";
 import { initFlowbite } from "flowbite";
@@ -13,14 +13,24 @@ function handleResize() {
   }
 }
 
-onMounted(() => {
-  window.addEventListener("resize", handleResize);
-  initFlowbite();
-});
+export default {
+  components: {
+    RouterLink,
+    RouterView,
+  },
+  setup() {
+    onMounted(() => {
+      window.addEventListener("resize", handleResize);
+      initFlowbite();
+    });
 
-onUnmounted(() => {
-  window.removeEventListener("resize", handleResize);
-});
+    onUnmounted(() => {
+      window.removeEventListener("resize", handleResize);
+    });
+
+    return { isMobile };
+  },
+};
 </script>
 
 <template>

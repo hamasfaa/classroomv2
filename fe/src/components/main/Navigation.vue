@@ -62,6 +62,7 @@
           <router-link
             :to="item.to"
             class="flex items-center hover:-translate-y-1 transition menu-item relative gap-4"
+            @click="item.name === 'Keluar' && handleLogout"
           >
             <span class="material-symbols-outlined text-light-teal text-3xl">{{
               item.icon
@@ -86,14 +87,22 @@
 </template>
 
 <script>
+import { useAuthStore } from "@/stores/authStore";
 import { useGeneralStore } from "@/stores/generalStore";
 
 export default {
   setup() {
     const GENERAL_STORE = useGeneralStore();
+    const AUTH_STORE = useAuthStore();
+
+    const handleLogout = () => {
+      AUTH_STORE.logout();
+    };
 
     return {
       GENERAL_STORE,
+      AUTH_STORE,
+      handleLogout,
     };
   },
   data() {
@@ -104,7 +113,7 @@ export default {
         { name: "Tugas", to: "/dosen/task", icon: "task" },
         { name: "Presensi", to: "/dosen/attendance", icon: "overview" },
         { name: "Pengaturan", to: "/settings", icon: "settings" },
-        { name: "Keluar", to: "/dosen/logout", icon: "logout" },
+        { name: "Keluar", to: "/login", icon: "logout" },
       ],
     };
   },

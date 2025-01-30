@@ -14,6 +14,7 @@ import DosenAttendanceView from '@/views/dosen/DosenAttendanceView.vue'
 import DosenAddAttendanceView from '@/views/dosen/DosenAddAttendanceView.vue'
 import DosenEditAttendanceView from '@/views/dosen/DosenEditAttendanceView.vue'
 import SettingView from '@/views/SettingView.vue'
+import { useAuthStore } from '@/stores/authStore'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -39,57 +40,78 @@ const router = createRouter({
     {
       path: '/dosen',
       name: 'dosen',
-      component: DosenView
+      component: DosenView,
+      meta: { requiresAuth: true, role: 'dosen' }
     },
     {
       path: '/dosen/class',
       name: 'dosen-class',
-      component: DosenClassView
+      component: DosenClassView,
+      meta: { requiresAuth: true, role: 'dosen' }
+
     },
     {
       path: '/dosen/addClass',
       name: 'add-class',
-      component: DosenAddClassView
+      component: DosenAddClassView,
+      meta: { requiresAuth: true, role: 'dosen' }
+
     },
     {
       path: '/dosen/task',
       name: 'dosen-task',
-      component: DosenTaskView
+      component: DosenTaskView,
+      meta: { requiresAuth: true, role: 'dosen' }
+
     },
     {
       path: '/dosen/manageTask',
       name: 'manage-task',
-      component: DosenManageTaskView
+      component: DosenManageTaskView,
+      meta: { requiresAuth: true, role: 'dosen' }
+
     },
     {
       path: '/dosen/addTask',
       name: 'add-task',
-      component: DosenAddTaskView
+      component: DosenAddTaskView,
+      meta: { requiresAuth: true, role: 'dosen' }
+
     },
     {
       path: '/dosen/attendance',
       name: 'dosen-attendance',
-      component: DosenAttendanceView
+      component: DosenAttendanceView,
+      meta: { requiresAuth: true, role: 'dosen' }
+
     },
     {
       path: '/dosen/manageAttendance',
       name: 'manage-attendance',
-      component: DosenManageAttendanceView
+      component: DosenManageAttendanceView,
+      meta: { requiresAuth: true, role: 'dosen' }
+
     },
     {
       path: '/dosen/addAttendance',
       name: 'add-attendance',
-      component: DosenAddAttendanceView
+      component: DosenAddAttendanceView,
+      meta: { requiresAuth: true, role: 'dosen' }
+
     },
     {
       path: '/dosen/editAttendance/:id',
       name: 'edit-attendance',
-      component: DosenEditAttendanceView
+      component: DosenEditAttendanceView,
+      meta: { requiresAuth: true, role: 'dosen' }
+
     },
     {
       path: '/mahasiswa',
       name: 'mahasiswa',
-      component: MahasiswaView
+      component: MahasiswaView,
+      meta: { requiresAuth: true, role: 'mahasiswa' }
+
     },
     {
       path: '/settings',
@@ -97,6 +119,22 @@ const router = createRouter({
       component: SettingView
     }
   ],
+})
+
+router.beforeEach((to, from, next) => {
+  const AUTH_STORE = useAuthStore();
+  AUTH_STORE.loadToken();
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    if (!AUTH_STORE.token) {
+      next({ name: 'login' });
+    } else if (to.meta.role && AUTH_STORE.role !== to.meta.role) {
+      next({ name: 'login' });
+    } else {
+      next();
+    }
+  } else {
+    next();
+  }
 })
 
 export default router
