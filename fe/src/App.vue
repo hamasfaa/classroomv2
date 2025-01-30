@@ -2,6 +2,8 @@
 import { RouterLink, RouterView } from "vue-router";
 import { ref, onMounted, onUnmounted } from "vue";
 import { initFlowbite } from "flowbite";
+import Navigation from "./components/main/Navigation.vue";
+import Logout from "./components/main/Logout.vue";
 
 const isMobile = ref(window.innerWidth <= 768);
 
@@ -15,6 +17,8 @@ function handleResize() {
 
 export default {
   components: {
+    Navigation,
+    Logout,
     RouterLink,
     RouterView,
   },
@@ -34,7 +38,9 @@ export default {
 </script>
 
 <template>
+  <Navigation />
   <RouterView />
+  <Logout />
 </template>
 
 <style scoped></style>

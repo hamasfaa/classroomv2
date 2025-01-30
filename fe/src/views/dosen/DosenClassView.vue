@@ -8,7 +8,6 @@ const GENERAL_STORE = useGeneralStore();
 </script>
 
 <template>
-  <Navigation />
   <div
     :class="[
       'flex flex-col h-screen p-6',

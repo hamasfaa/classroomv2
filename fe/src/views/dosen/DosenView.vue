@@ -1,17 +1,17 @@
 <script setup>
 import { useGeneralStore } from "@/stores/generalStore";
-import Carousel from "@/components/main/Caroussel.vue";
+import Carousel from "@/components/main/Carousel.vue";
 import Navigation from "@/components/main/Navigation.vue";
 import Banner from "@/components/main/Banner.vue";
 import ListClass from "@/components/main/ListClass.vue";
 import ListTask from "@/components/main/ListTask.vue";
 import ListMeeting from "@/components/main/ListMeeting.vue";
+import Logout from "@/components/main/Logout.vue";
 
 const GENERAL_STORE = useGeneralStore();
 </script>
 
 <template>
-  <Navigation />
   <div
     :class="[
       'flex flex-col h-screen',

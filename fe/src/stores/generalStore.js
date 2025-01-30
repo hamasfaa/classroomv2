@@ -7,6 +7,7 @@ export const useGeneralStore = defineStore('general', {
         isSidebarOpen: false,
         isSidebarMobileOpen: false,
         carousel: carousel,
+        isLogout: false
     }),
     actions: {
         toggleSidebar() {
@@ -15,5 +16,8 @@ export const useGeneralStore = defineStore('general', {
         toggleSidebarMobile() {
             this.isSidebarMobileOpen = !this.isSidebarMobileOpen
         },
+        toggleLogout() {
+            this.isLogout = !this.isLogout
+        }
     },
 })

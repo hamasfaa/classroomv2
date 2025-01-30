@@ -62,7 +62,6 @@
           <router-link
             :to="item.to"
             class="flex items-center hover:-translate-y-1 transition menu-item relative gap-4"
-            @click="item.name === 'Keluar' && handleLogout"
           >
             <span class="material-symbols-outlined text-light-teal text-3xl">{{
               item.icon
@@ -74,6 +73,17 @@
             >
           </router-link>
         </li>
+        <button
+          class="flex items-center hover:-translate-y-1 transition menu-item relative gap-4"
+          @click="GENERAL_STORE.toggleLogout"
+        >
+          <span class="material-symbols-outlined text-light-teal text-3xl"
+            >logout</span
+          >
+          <span v-if="!GENERAL_STORE.isSidebarOpen" class="opacity-100 text-xl"
+            >Keluar</span
+          >
+        </button>
       </ul>
     </div>
     <div class="flex items-center space-x-4 p-6 mt-auto">
@@ -87,7 +97,6 @@
 </template>
 
 <script>
-import router from "@/router";
 import { useAuthStore } from "@/stores/authStore";
 import { useGeneralStore } from "@/stores/generalStore";
 
@@ -96,16 +105,9 @@ export default {
     const GENERAL_STORE = useGeneralStore();
     const AUTH_STORE = useAuthStore();
 
-    const handleLogout = () => {
-      console.log("Logout");
-      AUTH_STORE.logout();
-      router.push({ name: "login" });
-    };
-
     return {
       GENERAL_STORE,
       AUTH_STORE,
-      handleLogout,
     };
   },
   data() {
@@ -116,7 +118,7 @@ export default {
         { name: "Tugas", to: "/dosen/task", icon: "task" },
         { name: "Presensi", to: "/dosen/attendance", icon: "overview" },
         { name: "Pengaturan", to: "/settings", icon: "settings" },
-        { name: "Keluar", to: "/login", icon: "logout" },
+        // { name: "Keluar", to: "/login", icon: "logout" },
       ],
     };
   },
