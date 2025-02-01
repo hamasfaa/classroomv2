@@ -16,7 +16,7 @@
         <div class="flex space-x-4">
           <button
             class="bg-dark-teal text-white text-lg px-6 py-3 rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal transition duration-300"
-            @click="AUTH_STORE.logout()"
+            @click="AUTH_STORE.logout() && GENERAL_STORE.toggleLogout"
           >
             Ya, Keluar
           </button>

@@ -47,11 +47,21 @@ export const useAuthStore = defineStore('auth', {
                 }
             }
         },
+        async logoutFromServer() {
+            try {
+                await api.post('logout/');
+            } catch (error) {
+                console.error("Gagal menghapus session di server:", error);
+            }
+        },
         logout() {
+            this.logoutFromServer();
+
             localStorage.removeItem('token');
             this.user = null;
             this.token = null;
             this.role = null;
+            router.push({ name: 'login' });
         },
         loadToken() {
             const token = localStorage.getItem('token');

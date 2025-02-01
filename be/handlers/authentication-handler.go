@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/session"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
@@ -69,6 +70,7 @@ func (h *AuthenticationHandler) LoginUser(c *fiber.Ctx) error {
 			"error": "Invalid request payload",
 		})
 	}
+
 	user, err := h.authenticationRepository.AuthenticationUser(input.Email, input.Password)
 	if err != nil {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
@@ -83,8 +85,32 @@ func (h *AuthenticationHandler) LoginUser(c *fiber.Ctx) error {
 		})
 	}
 
+	sess := c.Locals("session").(*session.Session)
+	sess.Set("uid", user.UID)
+	sess.Set("role", user.URole)
+	if err := sess.Save(); err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(
+			fiber.Map{"error": "Gagal menyimpan session"},
+		)
+	}
+
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"token": token,
+		"token":   token,
+		"message": "Login berhasil, session disimpan",
+	})
+}
+
+func (h *AuthenticationHandler) LogoutUser(c *fiber.Ctx) error {
+	sess := c.Locals("session").(*session.Session)
+	err := sess.Destroy()
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Gagal menghapus session",
+		})
+	}
+
+	return c.JSON(fiber.Map{
+		"message": "Logout berhasil, session telah dihapus",
 	})
 }
 

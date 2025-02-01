@@ -1,6 +1,6 @@
 <script>
-import { RouterLink, RouterView } from "vue-router";
-import { ref, onMounted, onUnmounted } from "vue";
+import { RouterLink, RouterView, useRoute } from "vue-router";
+import { ref, onMounted, onUnmounted, watch } from "vue";
 import { initFlowbite } from "flowbite";
 import Navigation from "./components/main/Navigation.vue";
 import Logout from "./components/main/Logout.vue";
@@ -23,6 +23,8 @@ export default {
     RouterView,
   },
   setup() {
+    const route = useRoute();
+
     onMounted(() => {
       window.addEventListener("resize", handleResize);
       initFlowbite();
@@ -32,15 +34,35 @@ export default {
       window.removeEventListener("resize", handleResize);
     });
 
-    return { isMobile };
+    const showNavigationAndLogout = ref(true);
+
+    watch(
+      route,
+      () => {
+        const hiddenRoutes = [
+          "/login",
+          "/register",
+          "/about",
+          "/access-denied",
+        ];
+        showNavigationAndLogout.value = !hiddenRoutes.includes(route.path);
+      },
+      { immediate: true }
+    );
+
+    return { isMobile, showNavigationAndLogout };
   },
 };
 </script>
 
 <template>
-  <Navigation />
+  <div v-if="showNavigationAndLogout">
+    <Navigation />
+  </div>
   <RouterView />
-  <Logout />
+  <div v-if="showNavigationAndLogout">
+    <Logout />
+  </div>
 </template>
 
 <style scoped></style>
