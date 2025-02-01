@@ -46,12 +46,16 @@ func main() {
 	// config.Migration()
 
 	db, _ := config.ConnectDB()
-	authenticationRepository := repositories.NewAuthenticationRepository(db)
 	jwtSecret := "your-secret-key"
+
+	authenticationRepository := repositories.NewAuthenticationRepository(db)
+	dosenRepository := repositories.NewDosenRepository(db)
 	authenticationHandler := handlers.NewAuthenticationHandler(authenticationRepository, jwtSecret)
+	dosenHandler := handlers.NewDosenHandler(dosenRepository)
 
 	api := app.Group("/api")
 	apiDosen := api.Group("/dosen", middlewares.DosenOnly(jwtSecret))
+	apiMahasiswa := api.Group("/mahasiswa", middlewares.MahasiswaOnly(jwtSecret))
 
 	api.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("Hello, World!")
@@ -73,6 +77,11 @@ func main() {
 
 	apiDosen.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("Hello, Dosen!")
+	})
+	apiDosen.Post("/addClass", dosenHandler.CreateClass)
+
+	apiMahasiswa.Get("/", func(c *fiber.Ctx) error {
+		return c.SendString("Hello, Mahasiswa!")
 	})
 
 	app.Listen(":3000")
