@@ -1,6 +1,6 @@
 <template>
   <div class="bg-white shadow-lg rounded-lg p-8">
-    <form method="POST">
+    <form @submit.prevent="handleAddClass">
       <div class="mb-6">
         <label
           for="namaKelas"
@@ -9,8 +9,7 @@
         >
         <input
           type="text"
-          id="namaKelas"
-          name="namaKelas"
+          v-model="namaKelas"
           class="border border-teal-300 rounded-lg w-full p-4 focus:outline-none focus:border-teal-500 transition duration-300"
           placeholder="Masukkan nama kelas"
         />
@@ -23,8 +22,7 @@
         >
         <input
           type="text"
-          id="mataKuliah"
-          name="mataKuliah"
+          v-model="mataKuliah"
           class="border border-teal-300 rounded-lg w-full p-4 focus:outline-none focus:border-teal-500 transition duration-300"
           placeholder="Masukkan mata kuliah"
         />
@@ -38,5 +36,34 @@
         </button>
       </div>
     </form>
+    <div v-if="errorMessage" class="text-red-700">{{ errorMessage }}</div>
   </div>
 </template>
+
+<script>
+import { useDosenStore } from "@/stores/dosenStore";
+
+export default {
+  setup() {
+    const DOSEN_STORE = useDosenStore();
+    return { DOSEN_STORE };
+  },
+  data() {
+    return {
+      namaKelas: "",
+      mataKuliah: "",
+      errorMessage: "",
+    };
+  },
+  methods: {
+    async handleAddClass() {
+      await this.DOSEN_STORE.addClass(this.namaKelas, this.mataKuliah);
+      if (this.DOSEN_STORE.errorMessage) {
+        this.errorMessage = this.DOSEN_STORE.errorMessage;
+      } else {
+        this.$router.push("/dosen/class");
+      }
+    },
+  },
+};
+</script>
