@@ -4,11 +4,13 @@ import router from "@/router/index"
 import { jwtDecode } from "jwt-decode"
 import { errorMessages } from "vue/compiler-sfc"
 import api from "@/service/api"
+import { ref } from "vue"
 
 export const useAuthStore = defineStore('auth', {
     state: () => ({
         user: null,
         token: null,
+        refreshToken: null,
         role: null,
         errorMessage: null
     }),
@@ -17,7 +19,10 @@ export const useAuthStore = defineStore('auth', {
             try {
                 const response = await api.post('login/', { email, password });
                 this.token = response.data.token;
+                this.refreshToken = response.data.refresh_token;
                 localStorage.setItem('token', this.token);
+                localStorage.setItem('refresh_token', this.refreshToken);
+
                 const decoded = jwtDecode(this.token);
                 this.user = { uid: decoded.uid, email: decoded.email };
                 this.role = decoded.role;
@@ -52,6 +57,23 @@ export const useAuthStore = defineStore('auth', {
                 await api.post('logout/');
             } catch (error) {
                 console.error("Gagal menghapus session di server:", error);
+            }
+        },
+        async refresh() {
+            try {
+                const refresh = localStorage.getItem('refresh_token');
+                if (!refresh) return;
+
+                const response = await api.post('refreshToken/', { refresh_token: refresh });
+                this.token = response.data.token;
+                localStorage.setItem('token', this.token);
+
+                const decoded = jwtDecode(this.token);
+                this.user = { uid: decoded.uid, email: decoded.email };
+                this.role = decoded.role;
+                console.log(this.token);
+            } catch (error) {
+                console.error("Gagal refresh token:", error);
             }
         },
         logout() {

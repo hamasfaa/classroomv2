@@ -9,6 +9,7 @@ import (
 )
 
 type AuthenticationRepository interface {
+	GetUserByUID(uid string) (*entities.User, error)
 	CreateUser(user *entities.User) error
 	AuthenticationUser(email, password string) (*entities.User, error)
 }
@@ -19,6 +20,15 @@ type authenticationRepositoryGorm struct {
 
 func NewAuthenticationRepository(db *gorm.DB) *authenticationRepositoryGorm {
 	return &authenticationRepositoryGorm{db: db}
+}
+
+func (r *authenticationRepositoryGorm) GetUserByUID(uid string) (*entities.User, error) {
+	var user entities.User
+	if err := r.db.Where("uid = ?", uid).First(&user).Error; err != nil {
+		return nil, err
+	}
+
+	return &user, nil
 }
 
 func (r *authenticationRepositoryGorm) CreateUser(user *entities.User) error {

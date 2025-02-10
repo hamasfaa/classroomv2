@@ -12,13 +12,17 @@
           </tr>
         </thead>
         <tbody>
-          <tr class="transition duration-300 hover:bg-teal-50">
+          <tr
+            v-for="kelas in classList"
+            :key="kelas.k_id"
+            class="transition duration-300 hover:bg-teal-50"
+          >
             <td class="p-4">
-              <a href="./detailKelas.php?ID=<?php echo $kelasID; ?>">KELAS A</a>
+              <router-link to="/">{{ kelas.k_nama_kelas }}</router-link>
             </td>
-            <td class="p-4">16 January 2025</td>
-            <td class="p-4">SISOP</td>
-            <td class="p-4">1S9TK9</td>
+            <td class="p-4">{{ formatDate(kelas.k_tanggal_dibuat) }}</td>
+            <td class="p-4">{{ kelas.k_mata_kuliah }}</td>
+            <td class="p-4">{{ kelas.k_kode_kelas }}</td>
             <td class="p-4">
               <form
                 action=""
@@ -43,3 +47,27 @@
     </div>
   </div>
 </template>
+
+<script>
+import { useDosenStore } from "@/stores/dosenStore";
+import { computed, onMounted } from "vue";
+
+export default {
+  setup() {
+    const DOSEN_STORE = useDosenStore();
+
+    onMounted(() => {
+      DOSEN_STORE.getAllClass();
+    });
+
+    const classList = computed(() => DOSEN_STORE.classList);
+
+    return { DOSEN_STORE, classList };
+  },
+  methods: {
+    formatDate(date) {
+      return new Date(date).toLocaleDateString("id-ID");
+    },
+  },
+};
+</script>

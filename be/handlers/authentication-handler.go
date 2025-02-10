@@ -3,10 +3,9 @@ package handlers
 import (
 	"be/entities"
 	"be/repositories"
-	"time"
+	"be/token"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/session"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
@@ -59,12 +58,7 @@ func (h *AuthenticationHandler) RegisterUser(c *fiber.Ctx) error {
 }
 
 func (h *AuthenticationHandler) LoginUser(c *fiber.Ctx) error {
-	type loginRequest struct {
-		Email    string `json:"email"`
-		Password string `json:"password"`
-	}
-
-	input := new(loginRequest)
+	input := new(entities.Login)
 	if err := c.BodyParser(input); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": "Invalid request payload",
@@ -78,51 +72,80 @@ func (h *AuthenticationHandler) LoginUser(c *fiber.Ctx) error {
 		})
 	}
 
-	token, err := h.GenerateJWT(user)
+	accessToken, err := token.GenerateToken(user, h.JWTSecret)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": "Failed to generate token",
 		})
 	}
 
-	sess := c.Locals("session").(*session.Session)
-	sess.Set("uid", user.UID)
-	sess.Set("role", user.URole)
-	if err := sess.Save(); err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(
-			fiber.Map{"error": "Gagal menyimpan session"},
-		)
+	refreshToken, err := token.GenerateRefreshToken(user, h.JWTSecret)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Failed to generate refresh token",
+		})
 	}
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"token":   token,
-		"message": "Login berhasil, session disimpan",
+		"token":         accessToken,
+		"refresh_token": refreshToken,
+		"message":       "Login berhasil, session disimpan",
 	})
 }
 
 func (h *AuthenticationHandler) LogoutUser(c *fiber.Ctx) error {
-	sess := c.Locals("session").(*session.Session)
-	err := sess.Destroy()
+	return c.JSON(fiber.Map{
+		"message": "Logout berhasil",
+	})
+}
+
+func (h *AuthenticationHandler) RefreshToken(c *fiber.Ctx) error {
+	input := new(entities.RefreshToken)
+	if err := c.BodyParser(input); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Invalid refresh token payload",
+		})
+	}
+
+	parsedToken, err := jwt.Parse(input.RefreshToken, func(token *jwt.Token) (interface{}, error) {
+		return []byte(h.JWTSecret), nil
+	})
+	if err != nil || !parsedToken.Valid {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"error": "Invalid refresh token",
+		})
+	}
+
+	claims, ok := parsedToken.Claims.(jwt.MapClaims)
+	if !ok {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"error": "Invalid refresh token claims",
+		})
+	}
+
+	uid, ok := claims["uid"].(string)
+	if !ok {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"error": "Invalid refresh token claims",
+		})
+	}
+
+	user, err := h.authenticationRepository.GetUserByUID(uid)
+	if err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"error": "User not found",
+		})
+	}
+
+	newToken, err := token.GenerateToken(user, h.JWTSecret)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": "Gagal menghapus session",
+			"error": "Failed to generate new token",
 		})
 	}
 
 	return c.JSON(fiber.Map{
-		"message": "Logout berhasil, session telah dihapus",
+		"token":   newToken,
+		"message": "Refresh token berhasil",
 	})
-}
-
-func (h *AuthenticationHandler) GenerateJWT(user *entities.User) (string, error) {
-	claims := jwt.MapClaims{
-		"uid":   user.UID,
-		"email": user.UEmail,
-		"role":  user.URole,
-		"exp":   time.Now().Add(time.Hour * 72).Unix(),
-	}
-
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-
-	return token.SignedString([]byte(h.JWTSecret))
 }

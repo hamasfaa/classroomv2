@@ -5,34 +5,15 @@ import (
 	"be/handlers"
 	"be/middlewares"
 	"be/repositories"
-	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
-	"github.com/gofiber/fiber/v2/middleware/session"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 func main() {
 	app := fiber.New()
-
-	store := session.New(session.Config{
-		CookieHTTPOnly: true,
-		CookieSecure:   false,
-		Expiration:     time.Hour * 24,
-	})
-
-	app.Use(func(c *fiber.Ctx) error {
-		sess, err := store.Get(c)
-		if err != nil {
-			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-				"error": "Terjadi kesalahan",
-			})
-		}
-
-		c.Locals("session", sess)
-		return c.Next()
-	})
 
 	app.Use(cors.New(cors.Config{
 		AllowOrigins:     "http://localhost:3000, http://localhost:5173",
@@ -64,15 +45,21 @@ func main() {
 	api.Post("/register", authenticationHandler.RegisterUser)
 	api.Post("/login", authenticationHandler.LoginUser)
 	api.Post("/logout", authenticationHandler.LogoutUser)
+	api.Post("/refreshToken", authenticationHandler.RefreshToken)
 
 	api.Get("/protected", func(c *fiber.Ctx) error {
-		sess := c.Locals("session").(*session.Session)
-
-		uid := sess.Get("uid")
-		if uid == nil {
-			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Belum login atau session tidak valid"})
+		tokenString := c.Get("Authorization")
+		if tokenString == "" {
+			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Belum login atau token tidak valid"})
 		}
-		return c.JSON(fiber.Map{"message": "Anda sudah login", "uid": uid})
+		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+			return []byte(jwtSecret), nil
+		})
+		if err != nil || !token.Valid {
+			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Token tidak valid"})
+		}
+		claims := token.Claims.(jwt.MapClaims)
+		return c.JSON(fiber.Map{"message": "Anda sudah login", "uid": claims["uid"]})
 	})
 
 	apiDosen.Get("/", func(c *fiber.Ctx) error {
