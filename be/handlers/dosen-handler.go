@@ -76,3 +76,31 @@ func (h *DosenHandler) CreateClass(c *fiber.Ctx) error {
 		"message": "Kelas berhasil dibuat",
 	})
 }
+
+func (h *DosenHandler) GetAllClass(c *fiber.Ctx) error {
+	userToken := c.Locals("user")
+	if userToken == nil {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Unauthorized"})
+	}
+
+	token := userToken.(*jwt.Token)
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid token claims"})
+	}
+
+	userUID, ok := claims["uid"].(string)
+	if !ok {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid token claims"})
+	}
+
+	classes, err := h.dosenRepository.GetAllClass(userUID)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	return c.JSON(fiber.Map{
+		"message": "Success",
+		"data":    classes,
+	})
+}

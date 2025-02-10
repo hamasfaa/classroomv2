@@ -25,7 +25,7 @@ func NewDosenRepository(db *gorm.DB) *dosenRepositoryGorm {
 func (r *dosenRepositoryGorm) GetAllClass(userUID string) ([]entities.Kelas, error) {
 	var kelas []entities.Kelas
 
-	query := `SELECT * FROM kelas K INNER JOIN user_kelas UK ON K.k_id = UK.kelas_k_id WHERE UK.user_u_id = ?`
+	query := `SELECT * FROM kelas K INNER JOIN user_kelas UK ON K.k_id = UK.kelas_k_id WHERE UK.user_uid = ?`
 
 	if err := r.db.Raw(query, userUID).Scan(&kelas).Error; err != nil {
 		return nil, err

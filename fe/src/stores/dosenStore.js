@@ -28,7 +28,7 @@ export const useDosenStore = defineStore('dosen', {
         async getAllClass() {
             try {
                 const response = await api.get('dosen/class');
-                this.classList = response.data;
+                this.classList = response.data.data;
             } catch (error) {
                 if (error.response && error.response.data) {
                     const AUTH_STORE = useAuthStore();
