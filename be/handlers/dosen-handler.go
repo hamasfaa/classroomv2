@@ -104,3 +104,19 @@ func (h *DosenHandler) GetAllClass(c *fiber.Ctx) error {
 		"data":    classes,
 	})
 }
+
+func (h *DosenHandler) DeleteClass(c *fiber.Ctx) error {
+	classID := c.Params("id")
+
+	if classID == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "ID kelas harus diisi"})
+	}
+
+	if err := h.dosenRepository.DeleteClass(classID); err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	return c.JSON(fiber.Map{
+		"message": "Kelas berhasil dihapus",
+	})
+}

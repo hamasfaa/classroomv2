@@ -24,22 +24,12 @@
             <td class="p-4">{{ kelas.k_mata_kuliah }}</td>
             <td class="p-4">{{ kelas.k_kode_kelas }}</td>
             <td class="p-4">
-              <form
-                action=""
-                method="POST"
-                onsubmit="return confirm('Apakah Anda yakin ingin menghapus kelas ini?');"
+              <button
+                class="relative bg-red-700 text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-red-500 hover:text-red-500 cursor-pointer"
+                @click="handleDeleteClass(kelas.k_id)"
               >
-                <input
-                  type="hidden"
-                  name="kelasDEL"
-                  value="<?php echo htmlspecialchars($kodeKelas); ?>"
-                />
-                <button
-                  class="relative bg-red-700 text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-red-500 hover:text-red-500 cursor-pointer"
-                >
-                  Hapus
-                </button>
-              </form>
+                Hapus
+              </button>
             </td>
           </tr>
         </tbody>
@@ -62,7 +52,15 @@ export default {
 
     const classList = computed(() => DOSEN_STORE.classList);
 
-    return { DOSEN_STORE, classList };
+    const handleDeleteClass = async (id) => {
+      if (confirm("Apakah Anda yakin ingin menghapus kelas ini?")) {
+        await DOSEN_STORE.deleteClass(id);
+        // Refresh the list after deletion
+        await DOSEN_STORE.getAllClass();
+      }
+    };
+
+    return { DOSEN_STORE, classList, handleDeleteClass };
   },
   methods: {
     formatDate(date) {

@@ -39,6 +39,21 @@ export const useDosenStore = defineStore('dosen', {
                     this.errorMessage = "An error occurred during fetching class.";
                 }
             }
+        },
+        async deleteClass(id) {
+            try {
+                const response = await api.delete(`dosen/deleteClass/${id}`);
+            } catch (error) {
+                if (error.response && error.response.data) {
+                    this.errorMessage = error.response.data.error;
+                    const AUTH_STORE = useAuthStore();
+                    await AUTH_STORE.refresh();
+                    await api.delete(`dosen/deleteClass/${id}`);
+                    this.errorMessage = error.response.data.error;
+                } else {
+                    this.errorMessage = "An error occurred during deleting class.";
+                }
+            }
         }
     }
 });

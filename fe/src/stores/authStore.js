@@ -17,7 +17,7 @@ export const useAuthStore = defineStore('auth', {
     actions: {
         async login(email, password) {
             try {
-                const response = await api.post('login/', { email, password });
+                const response = await api.post('login', { email, password });
                 this.token = response.data.token;
                 this.refreshToken = response.data.refresh_token;
                 localStorage.setItem('token', this.token);
@@ -26,7 +26,7 @@ export const useAuthStore = defineStore('auth', {
                 const decoded = jwtDecode(this.token);
                 this.user = { uid: decoded.uid, email: decoded.email };
                 this.role = decoded.role;
-                errorMessages = null;
+                this.errorMessage = null;
                 // console.log(this.token);
 
             } catch (error) {
@@ -41,7 +41,7 @@ export const useAuthStore = defineStore('auth', {
             const isoDate = new Date(dob).toISOString();
 
             try {
-                const response = await api.post('register/', { u_nama: name, u_tanggal_lahir: isoDate, u_role: role, u_email: email, u_password: password });
+                const response = await api.post('register', { u_nama: name, u_tanggal_lahir: isoDate, u_role: role, u_email: email, u_password: password });
                 this.user = response.data;
                 this.errorMessage = null;
             } catch (error) {
@@ -64,7 +64,7 @@ export const useAuthStore = defineStore('auth', {
                 const refresh = localStorage.getItem('refresh_token');
                 if (!refresh) return;
 
-                const response = await api.post('refreshToken/', { refresh_token: refresh });
+                const response = await api.post('refreshToken', { refresh_token: refresh });
                 this.token = response.data.token;
                 localStorage.setItem('token', this.token);
 

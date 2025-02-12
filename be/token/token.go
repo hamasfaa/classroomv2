@@ -12,7 +12,7 @@ func GenerateToken(user *entities.User, jwtSecret string) (string, error) {
 		"uid":   user.UID,
 		"email": user.UEmail,
 		"role":  user.URole,
-		"exp":   time.Now().Add(time.Minute * 15).Unix(),
+		"exp":   time.Now().Add(time.Minute * 5).Unix(),
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)

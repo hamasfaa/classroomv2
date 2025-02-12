@@ -10,6 +10,7 @@ type DosenRepository interface {
 	GetAllClass(userUID string) ([]entities.Kelas, error)
 	CreateClass(kelas *entities.Kelas) error
 	AddUserToClass(userUID string, classID string) error
+	DeleteClass(classID string) error
 	GetAllTask(userUID string) ([]entities.TugasDosen, error)
 	GetAllMeeting() ([]entities.AbsenDosen, error)
 }
@@ -49,6 +50,17 @@ func (r *dosenRepositoryGorm) AddUserToClass(userUID string, classID string) err
 		return err
 	}
 
+	return nil
+}
+
+func (r *dosenRepositoryGorm) DeleteClass(classID string) error {
+	if err := r.db.Exec("DELETE FROM user_kelas WHERE kelas_k_id = ?", classID).Error; err != nil {
+		return err
+	}
+
+	if err := r.db.Exec("DELETE FROM kelas WHERE k_id = ?", classID).Error; err != nil {
+		return err
+	}
 	return nil
 }
 
