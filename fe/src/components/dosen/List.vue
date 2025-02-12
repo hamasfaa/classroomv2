@@ -10,19 +10,23 @@
           </tr>
         </thead>
         <tbody>
-          <tr class="transition duration-300 hover:bg-teal-50">
-            <td class="p-4">Kelas A</td>
-            <td class="p-4">SISOP</td>
+          <tr
+            v-for="kelas in classList"
+            :key="kelas.k_id"
+            class="transition duration-300 hover:bg-teal-50"
+          >
+            <td class="p-4">{{ kelas.k_nama_kelas }}</td>
+            <td class="p-4">{{ kelas.k_mata_kuliah }}</td>
             <td class="p-4">
               <router-link
                 v-if="List === 'Class'"
-                to="/dosen/manageTask"
+                :to="`/dosen/manageTask/${kelas.k_id}`"
                 class="bg-dark-teal text-white text-lg px-4 py-2 rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal transition duration-300"
                 >Kelola Tugas</router-link
               >
               <router-link
                 v-else-if="List === 'Attendance'"
-                to="/dosen/manageAttendance"
+                :to="`/dosen/manageAttendance/${kelas.k_id}`"
                 class="bg-dark-teal text-white text-lg px-4 py-2 rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal transition duration-300"
                 >Kelola Presensi</router-link
               >
@@ -35,7 +39,24 @@
 </template>
 
 <script>
+import { useDosenStore } from "@/stores/dosenStore";
+import { computed, onMounted } from "vue";
+
 export default {
+  setup() {
+    const DOSEN_STORE = useDosenStore();
+
+    onMounted(() => {
+      DOSEN_STORE.getAllClass();
+    });
+
+    const classList = computed(() => DOSEN_STORE.classList);
+
+    return {
+      DOSEN_STORE,
+      classList,
+    };
+  },
   props: {
     List: {
       type: String,

@@ -73,7 +73,7 @@ const router = createRouter({
 
     },
     {
-      path: '/dosen/manageTask',
+      path: '/dosen/manageTask/:id',
       name: 'manage-task',
       component: DosenManageTaskView,
       meta: { requiresAuth: true, role: 'dosen' }
@@ -94,7 +94,7 @@ const router = createRouter({
 
     },
     {
-      path: '/dosen/manageAttendance',
+      path: '/dosen/manageAttendance/:id',
       name: 'manage-attendance',
       component: DosenManageAttendanceView,
       meta: { requiresAuth: true, role: 'dosen' }
