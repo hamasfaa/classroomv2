@@ -16,6 +16,7 @@ import DosenEditAttendanceView from '@/views/dosen/DosenEditAttendanceView.vue'
 import SettingView from '@/views/SettingView.vue'
 import { useAuthStore } from '@/stores/authStore'
 import AccessDeniedView from '@/views/AccessDeniedView.vue'
+import DosenDetailClassView from '@/views/dosen/DosenDetailClassView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -57,6 +58,12 @@ const router = createRouter({
       component: DosenAddClassView,
       meta: { requiresAuth: true, role: 'dosen' }
 
+    },
+    {
+      path: "/dosen/detailClass/:id",
+      name: "detail-class",
+      component: DosenDetailClassView,
+      meta: { requiresAuth: true, role: 'dosen' }
     },
     {
       path: '/dosen/task',

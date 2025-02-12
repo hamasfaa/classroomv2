@@ -18,7 +18,9 @@
             class="transition duration-300 hover:bg-teal-50"
           >
             <td class="p-4">
-              <router-link to="/">{{ kelas.k_nama_kelas }}</router-link>
+              <router-link :to="`/dosen/detailClass/${kelas.k_id}`">{{
+                kelas.k_nama_kelas
+              }}</router-link>
             </td>
             <td class="p-4">{{ formatDate(kelas.k_tanggal_dibuat) }}</td>
             <td class="p-4">{{ kelas.k_mata_kuliah }}</td>
