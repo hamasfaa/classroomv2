@@ -54,6 +54,39 @@ export const useDosenStore = defineStore('dosen', {
                     this.errorMessage = "An error occurred during deleting class.";
                 }
             }
+        },
+        async addTask(namaTugas, deskripsi, deadline, files, idClass) {
+            const isoDate = new Date(deadline).toISOString();
+
+            const filePromises = files.map(file => {
+                return new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                        resolve({
+                            tf_nama: file.name,
+                            tf_content: reader.result.split(',')[1],
+                            tf_type: file.type
+                        });
+                    };
+                    reader.readAsDataURL(file);
+                })
+            });
+
+            const filesData = await Promise.all(filePromises);
+
+            try {
+                await api.post(`dosen/addTask/${idClass}`, { td_judul: namaTugas, td_deskripsi: deskripsi, td_deadline: isoDate, files: filesData });
+            } catch (error) {
+                if (error.response && error.response.data) {
+                    this.errorMessage = error.response.data.error;
+                    const AUTH_STORE = useAuthStore();
+                    await AUTH_STORE.refresh();
+                    await api.post(`dosen/addTask/${idClass}`, { td_judul: namaTugas, td_deskripsi: deskripsi, td_deadline: deadline, files: filesData });
+                    this.errorMessage = error.response.data.error;
+                } else {
+                    this.errorMessage = "An error occurred during adding task.";
+                }
+            }
         }
     }
 });

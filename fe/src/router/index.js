@@ -80,7 +80,7 @@ const router = createRouter({
 
     },
     {
-      path: '/dosen/addTask',
+      path: '/dosen/addTask/:id',
       name: 'add-task',
       component: DosenAddTaskView,
       meta: { requiresAuth: true, role: 'dosen' }

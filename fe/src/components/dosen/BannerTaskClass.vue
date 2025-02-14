@@ -10,7 +10,7 @@
     </div>
     <router-link
       v-if="add"
-      to="/dosen/addTask"
+      :to="`/dosen/addTask/${$route.params.id}`"
       class="bg-dark-teal text-white text-lg px-4 py-2 h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal transition duration-300"
       >Tambah Tugas</router-link
     >

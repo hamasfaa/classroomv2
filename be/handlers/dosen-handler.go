@@ -3,7 +3,11 @@ package handlers
 import (
 	"be/entities"
 	"be/repositories"
+	"encoding/base64"
+	"fmt"
 	"math/rand"
+	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -118,5 +122,88 @@ func (h *DosenHandler) DeleteClass(c *fiber.Ctx) error {
 
 	return c.JSON(fiber.Map{
 		"message": "Kelas berhasil dihapus",
+	})
+}
+
+func (h *DosenHandler) CreateTask(c *fiber.Ctx) error {
+	userToken := c.Locals("user")
+	if userToken == nil {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Unauthorized"})
+	}
+
+	token := userToken.(*jwt.Token)
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid token claims"})
+	}
+
+	userUID, ok := claims["uid"].(string)
+	if !ok {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid token claims"})
+	}
+
+	var request entities.Tugas
+	if err := c.BodyParser(&request); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	if request.TDJudul == "" || request.TDDeskripsi == "" || request.TDDeadline.IsZero() {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Semua field harus diisi"})
+	}
+
+	newTUID, err := uuid.NewRandom()
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Failed to generate UUID",
+		})
+	}
+
+	task := &entities.TugasDosen{
+		TDID:            newTUID.String(),
+		TDJudul:         request.TDJudul,
+		TDDeskripsi:     request.TDDeskripsi,
+		TDTanggalDibuat: time.Now(),
+		TDDeadline:      request.TDDeadline,
+		KelasKID:        c.Params("id"),
+		UserUID:         userUID,
+	}
+
+	var taskFiles []entities.TugasFile
+	for _, fileData := range request.Files {
+		fileID, _ := uuid.NewRandom()
+
+		decoded, err := base64.StdEncoding.DecodeString(fileData.TFContent)
+		if err != nil {
+			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+				"error": "Invalid file content",
+			})
+		}
+
+		filePath := fmt.Sprintf("uploads/tasks/%s/%s", newTUID.String(), fileData.TFNama)
+
+		os.MkdirAll(filepath.Dir(filePath), 0755)
+
+		if err := os.WriteFile(filePath, decoded, 0644); err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"error": "Failed to save file",
+			})
+		}
+
+		taskFile := entities.TugasFile{
+			TFID:      fileID.String(),
+			TFNama:    fileData.TFNama,
+			TFPath:    filePath,
+			TugasTDID: newTUID.String(),
+		}
+
+		taskFiles = append(taskFiles, taskFile)
+	}
+
+	if err := h.dosenRepository.CreateTaskWithFiles(task, taskFiles); err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
+		"message": "Tugas berhasil dibuat",
 	})
 }

@@ -43,6 +43,7 @@ func SetupRoutes(app *fiber.App, authenticationHandler *handlers.AuthenticationH
 	apiDosen.Post("/addClass", dosenHandler.CreateClass)
 	apiDosen.Get("/class", dosenHandler.GetAllClass)
 	apiDosen.Delete("/deleteClass/:id", dosenHandler.DeleteClass)
+	apiDosen.Post("/addTask/:id", dosenHandler.CreateTask)
 
 	apiMahasiswa.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("Hello, Mahasiswa!")

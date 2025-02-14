@@ -13,6 +13,8 @@ type DosenRepository interface {
 	DeleteClass(classID string) error
 	GetAllTask(userUID string) ([]entities.TugasDosen, error)
 	GetAllMeeting() ([]entities.AbsenDosen, error)
+	// CreateTask(task *entities.TugasDosen) error
+	CreateTaskWithFiles(task *entities.TugasDosen, files []entities.TugasFile) error
 }
 
 type dosenRepositoryGorm struct {
@@ -82,4 +84,28 @@ func (r *dosenRepositoryGorm) GetAllMeeting() ([]entities.AbsenDosen, error) {
 	}
 
 	return absen, nil
+}
+
+// func (r *dosenRepositoryGorm) CreateTask(task *entities.TugasDosen) error {
+// 	if err := r.db.Create(task).Error; err != nil {
+// 		return err
+// 	}
+
+// 	return nil
+// }
+
+func (r *dosenRepositoryGorm) CreateTaskWithFiles(task *entities.TugasDosen, files []entities.TugasFile) error {
+	return r.db.Transaction(func(tx *gorm.DB) error {
+		if err := tx.Create(task).Error; err != nil {
+			return err
+		}
+
+		if len(files) > 0 {
+			if err := tx.Create(&files).Error; err != nil {
+				return err
+			}
+		}
+
+		return nil
+	})
 }

@@ -9,7 +9,6 @@ type TugasDosen struct {
 	TDTanggalDibuat time.Time `gorm:"type:date" json:"td_tanggal_dibuat"`
 	TDDeadline      time.Time `gorm:"type:date" json:"td_deadline"`
 	TDStatus        bool      `gorm:"type:boolean"  json:"td_status"`
-	TDFileSoal      string    `gorm:"type:varchar(255)" json:"td_file_soal"`
 	KelasKID        string    `gorm:"type:varchar(255)" json:"kelas_k_id"`
 	UserUID         string    `gorm:"type:varchar(255)" json:"user_u_id"`
 
