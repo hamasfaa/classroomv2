@@ -13,8 +13,8 @@ type DosenRepository interface {
 	DeleteClass(classID string) error
 	GetAllTask(userUID string, classID string) ([]entities.TugasDosen, error)
 	GetAllMeeting() ([]entities.AbsenDosen, error)
-	// CreateTask(task *entities.TugasDosen) error
 	CreateTaskWithFiles(task *entities.TugasDosen, files []entities.TugasFile) error
+	UpdateStatusTask(taskID string, status bool) error
 }
 
 type dosenRepositoryGorm struct {
@@ -88,11 +88,18 @@ func (r *dosenRepositoryGorm) GetAllMeeting() ([]entities.AbsenDosen, error) {
 	return absen, nil
 }
 
-// func (r *dosenRepositoryGorm) CreateTask(task *entities.TugasDosen) error {
+//not safety without transaction
+// func (r *dosenRepositoryGorm) CreateTaskWithFiles(task *entities.TugasDosen, files []entities.TugasFile) error {
+// 	// If this succeeds but files creation fails
 // 	if err := r.db.Create(task).Error; err != nil {
 // 		return err
 // 	}
-
+// 	// If this fails, we'll have a task without its files
+// 	if len(files) > 0 {
+// 		if err := r.db.Create(&files).Error; err != nil {
+// 			return err
+// 		}
+// 	}
 // 	return nil
 // }
 
@@ -110,4 +117,12 @@ func (r *dosenRepositoryGorm) CreateTaskWithFiles(task *entities.TugasDosen, fil
 
 		return nil
 	})
+}
+
+func (r *dosenRepositoryGorm) UpdateStatusTask(taskID string, status bool) error {
+	if err := r.db.Exec("UPDATE tugas_dosens SET td_status = ? WHERE td_id = ?", status, taskID).Error; err != nil {
+		return err
+	}
+
+	return nil
 }

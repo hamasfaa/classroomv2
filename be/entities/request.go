@@ -23,3 +23,7 @@ type FileData struct {
 	TFContent string `json:"tf_content"`
 	TFType    string `json:"tf_type"`
 }
+
+type Status struct {
+	Status bool `json:"td_status"`
+}

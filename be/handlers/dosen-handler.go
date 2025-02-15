@@ -241,3 +241,25 @@ func (h *DosenHandler) GetAllTask(c *fiber.Ctx) error {
 		"data":    tasks,
 	})
 }
+
+func (h *DosenHandler) UpdateStatusTask(c *fiber.Ctx) error {
+	var status entities.Status
+
+	if err := c.BodyParser(&status); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	taskID := c.Params("id")
+
+	if taskID == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "ID tugas harus diisi"})
+	}
+
+	if err := h.dosenRepository.UpdateStatusTask(taskID, status.Status); err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	return c.JSON(fiber.Map{
+		"message": "Status tugas berhasil diubah",
+	})
+}

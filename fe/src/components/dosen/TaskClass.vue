@@ -27,41 +27,17 @@
                 class="relative bg-dark-teal text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal"
                 >Beri Nilai</a
               >
-              <form action="" method="POST">
-                <input
-                  type="hidden"
-                  name="tugasID"
-                  value="<?php echo htmlspecialchars($tugasID) ?>"
-                />
-                <input
-                  type="hidden"
-                  name="status"
-                  value="<?php echo ($status == 0) ? 1 : 0 ?>"
-                />
-                <input type="hidden" name="action" value="update" />
-                <button
-                  class="relative bg-yellow-700 text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-yellow-500 hover:text-yellow-500"
-                >
-                  Tampilkan
-                </button>
-              </form>
-              <form
-                action=""
-                method="POST"
-                onsubmit="return confirm('Apakah Anda yakin ingin menghapus tugas ini?');"
+              <button
+                @click="handleTaskStatus(tugas.td_id, tugas.td_status)"
+                class="relative bg-yellow-700 text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-yellow-500 hover:text-yellow-500"
               >
-                <input
-                  type="hidden"
-                  name="tugasID"
-                  value="<?php echo htmlspecialchars($tugasID) ?>"
-                />
-                <input type="hidden" name="action" value="delete" />
-                <button
-                  class="relative bg-red-700 text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-red-500 hover:text-red-500 cursor-pointer"
-                >
-                  Hapus
-                </button>
-              </form>
+                {{ tugas.td_status == 0 ? "Tampilkan" : "Sembunyikan" }}
+              </button>
+              <button
+                class="relative bg-red-700 text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-red-500 hover:text-red-500 cursor-pointer"
+              >
+                Hapus
+              </button>
             </td>
           </tr>
         </tbody>
@@ -87,11 +63,15 @@ export default {
 
     const taskList = computed(() => DOSEN_STORE.taskList);
 
-    return { DOSEN_STORE, taskList };
+    return { DOSEN_STORE, taskList, ROUTE };
   },
   methods: {
     formatDate(date) {
       return new Date(date).toLocaleDateString("id-ID");
+    },
+    async handleTaskStatus(taskId, taskStatus) {
+      const classId = this.ROUTE.params.id;
+      await this.DOSEN_STORE.updateTaskStatus(taskId, !taskStatus, classId);
     },
   },
 };

@@ -54,19 +54,17 @@ export default {
 
     const classList = computed(() => DOSEN_STORE.classList);
 
-    const handleDeleteClass = async (id) => {
-      if (confirm("Apakah Anda yakin ingin menghapus kelas ini?")) {
-        await DOSEN_STORE.deleteClass(id);
-        // Refresh the list after deletion
-        await DOSEN_STORE.getAllClass();
-      }
-    };
-
-    return { DOSEN_STORE, classList, handleDeleteClass };
+    return { DOSEN_STORE, classList };
   },
   methods: {
     formatDate(date) {
       return new Date(date).toLocaleDateString("id-ID");
+    },
+    async handleDeleteClass(classId) {
+      if (confirm("Apakah Anda yakin ingin menghapus kelas ini?")) {
+        await this.DOSEN_STORE.deleteClass(classId);
+        this.DOSEN_STORE.getAllClass();
+      }
     },
   },
 };

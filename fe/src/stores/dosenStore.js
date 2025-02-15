@@ -104,6 +104,24 @@ export const useDosenStore = defineStore('dosen', {
                     this.errorMessage = "An error occurred during fetching task.";
                 }
             }
+        },
+        async updateTaskStatus(idTask, status, classId) {
+            try {
+                // console.log(idTask, status, classId);
+                await api.put(`dosen/updateTaskStatus/${idTask}`, { td_status: status });
+                await this.getAllTask(classId);
+            } catch (error) {
+                if (error.response && error.response.data) {
+                    this.errorMessage = error.response.data.error;
+                    const AUTH_STORE = useAuthStore();
+                    await AUTH_STORE.refresh();
+                    await api.put(`dosen/updateTaskStatus/${idTask}`, { td_status: status });
+                    await this.getAllTask(classId);
+                    this.errorMessage = error.response.data.error;
+                } else {
+                    this.errorMessage = "An error occurred during updating task status.";
+                }
+            }
         }
     }
 });
