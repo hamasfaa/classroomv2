@@ -207,3 +207,37 @@ func (h *DosenHandler) CreateTask(c *fiber.Ctx) error {
 		"message": "Tugas berhasil dibuat",
 	})
 }
+
+func (h *DosenHandler) GetAllTask(c *fiber.Ctx) error {
+	userToken := c.Locals("user")
+	if userToken == nil {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Unauthorized"})
+	}
+
+	token := userToken.(*jwt.Token)
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid token claims"})
+	}
+
+	userUID, ok := claims["uid"].(string)
+	if !ok {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid token claims"})
+	}
+
+	classID := c.Params("id")
+
+	if classID == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "ID kelas harus diisi"})
+	}
+
+	tasks, err := h.dosenRepository.GetAllTask(userUID, classID)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	return c.JSON(fiber.Map{
+		"message": "Success",
+		"data":    tasks,
+	})
+}

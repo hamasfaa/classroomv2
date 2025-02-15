@@ -6,7 +6,8 @@ import { useAuthStore } from "./authStore";
 export const useDosenStore = defineStore('dosen', {
     state: () => ({
         errorMessage: null,
-        classList: []
+        classList: [],
+        taskList: []
     }),
     actions: {
         async addClass(namaKelas, mataKuliah) {
@@ -85,6 +86,22 @@ export const useDosenStore = defineStore('dosen', {
                     this.errorMessage = error.response.data.error;
                 } else {
                     this.errorMessage = "An error occurred during adding task.";
+                }
+            }
+        },
+        async getAllTask(idClass) {
+            try {
+                const response = await api.get(`dosen/manageTask/${idClass}`);
+                this.taskList = response.data.data;
+            } catch (error) {
+                if (error.response && error.response.data) {
+                    this.errorMessage = error.response.data.error;
+                    const AUTH_STORE = useAuthStore();
+                    await AUTH_STORE.refresh();
+                    await this.getAllTask(idClass);
+                    this.errorMessage = error.response.data.error;
+                } else {
+                    this.errorMessage = "An error occurred during fetching task.";
                 }
             }
         }

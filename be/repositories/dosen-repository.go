@@ -11,7 +11,7 @@ type DosenRepository interface {
 	CreateClass(kelas *entities.Kelas) error
 	AddUserToClass(userUID string, classID string) error
 	DeleteClass(classID string) error
-	GetAllTask(userUID string) ([]entities.TugasDosen, error)
+	GetAllTask(userUID string, classID string) ([]entities.TugasDosen, error)
 	GetAllMeeting() ([]entities.AbsenDosen, error)
 	// CreateTask(task *entities.TugasDosen) error
 	CreateTaskWithFiles(task *entities.TugasDosen, files []entities.TugasFile) error
@@ -66,10 +66,12 @@ func (r *dosenRepositoryGorm) DeleteClass(classID string) error {
 	return nil
 }
 
-func (r *dosenRepositoryGorm) GetAllTask(userUID string) ([]entities.TugasDosen, error) {
+func (r *dosenRepositoryGorm) GetAllTask(userUID string, classUID string) ([]entities.TugasDosen, error) {
 	var tugas []entities.TugasDosen
 
-	if err := r.db.Find(&tugas).Error; err != nil {
+	query := `SELECT * FROM tugas_dosens WHERE kelas_k_id = ? AND user_uid = ?`
+
+	if err := r.db.Raw(query, classUID, userUID).Scan(&tugas).Error; err != nil {
 		return nil, err
 	}
 

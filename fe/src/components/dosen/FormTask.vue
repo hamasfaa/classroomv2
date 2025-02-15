@@ -151,7 +151,7 @@ export default {
       if (this.DOSEN_STORE.errorMessage) {
         this.errorMessage = this.DOSEN_STORE.errorMessage;
       } else {
-        this.$router.push("/dosen/task");
+        this.$router.push("/dosen/manageTask/" + classId);
       }
     },
   },

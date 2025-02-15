@@ -12,10 +12,14 @@
           </tr>
         </thead>
         <tbody>
-          <tr class="transition duration-300 hover:bg-teal-50">
-            <td class="p-4">baca buku</td>
-            <td class="p-4">16 January 2025</td>
-            <td class="p-4">25 January 2025</td>
+          <tr
+            v-for="tugas in taskList"
+            :key="tugas.td_id"
+            class="transition duration-300 hover:bg-teal-50"
+          >
+            <td class="p-4">{{ tugas.td_judul }}</td>
+            <td class="p-4">{{ formatDate(tugas.td_tanggal_dibuat) }}</td>
+            <td class="p-4">{{ formatDate(tugas.td_deadline) }}</td>
             <td class="p-4">Tidak ada file</td>
             <td class="p-4 flex">
               <a
@@ -65,3 +69,30 @@
     </div>
   </div>
 </template>
+
+<script>
+import { useDosenStore } from "@/stores/dosenStore";
+import { computed, onMounted } from "vue";
+import { useRoute } from "vue-router";
+
+export default {
+  setup() {
+    const DOSEN_STORE = useDosenStore();
+    const ROUTE = useRoute();
+
+    onMounted(() => {
+      const classId = ROUTE.params.id;
+      DOSEN_STORE.getAllTask(classId);
+    });
+
+    const taskList = computed(() => DOSEN_STORE.taskList);
+
+    return { DOSEN_STORE, taskList };
+  },
+  methods: {
+    formatDate(date) {
+      return new Date(date).toLocaleDateString("id-ID");
+    },
+  },
+};
+</script>
