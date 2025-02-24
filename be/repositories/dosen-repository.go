@@ -56,14 +56,31 @@ func (r *dosenRepositoryGorm) AddUserToClass(userUID string, classID string) err
 }
 
 func (r *dosenRepositoryGorm) DeleteClass(classID string) error {
-	if err := r.db.Exec("DELETE FROM user_kelas WHERE kelas_k_id = ?", classID).Error; err != nil {
-		return err
-	}
+	return r.db.Transaction(func(tx *gorm.DB) error {
+		if err := tx.Exec(`
+            DELETE FROM tugas_files 
+            WHERE tugas_td_id IN (
+                SELECT td_id 
+                FROM tugas_dosens 
+                WHERE kelas_k_id = ?
+            )`, classID).Error; err != nil {
+			return err
+		}
 
-	if err := r.db.Exec("DELETE FROM kelas WHERE k_id = ?", classID).Error; err != nil {
-		return err
-	}
-	return nil
+		if err := tx.Exec("DELETE FROM tugas_dosens WHERE kelas_k_id = ?", classID).Error; err != nil {
+			return err
+		}
+
+		if err := tx.Exec("DELETE FROM user_kelas WHERE kelas_k_id = ?", classID).Error; err != nil {
+			return err
+		}
+
+		if err := tx.Exec("DELETE FROM kelas WHERE k_id = ?", classID).Error; err != nil {
+			return err
+		}
+
+		return nil
+	})
 }
 
 func (r *dosenRepositoryGorm) GetAllTask(userUID string, classUID string) ([]entities.TugasDosen, error) {
