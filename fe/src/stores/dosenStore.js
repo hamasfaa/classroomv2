@@ -7,7 +7,8 @@ export const useDosenStore = defineStore('dosen', {
     state: () => ({
         errorMessage: null,
         classList: [],
-        taskList: []
+        taskList: [],
+        userList: []
     }),
     actions: {
         async addClass(namaKelas, mataKuliah) {
@@ -53,6 +54,22 @@ export const useDosenStore = defineStore('dosen', {
                     this.errorMessage = error.response.data.error;
                 } else {
                     this.errorMessage = "An error occurred during deleting class.";
+                }
+            }
+        },
+        async getAllUser(id) {
+            try {
+                const response = await api.get(`dosen/detailClass/${id}`);
+                this.userList = response.data.data;
+            } catch (error) {
+                if (error.response && error.response.data) {
+                    this.errorMessage = error.response.data.error;
+                    const AUTH_STORE = useAuthStore();
+                    await AUTH_STORE.refresh();
+                    await this.getAllUser(id);
+                    this.errorMessage = error.response.data.error;
+                } else {
+                    this.errorMessage = "An error occurred during fetching user.";
                 }
             }
         },

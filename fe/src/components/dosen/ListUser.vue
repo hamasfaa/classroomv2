@@ -9,12 +9,48 @@
         </tr>
       </thead>
       <tbody>
-        <tr class="transition duration-300 hover:bg-teal-50">
-          <td class="p-4">tes</td>
-          <td class="p-4">JOKO</td>
-          <td class="p-4 uppercase">DOSEN</td>
+        <tr
+          v-for="(user, index) in userList"
+          :key="user.u_id"
+          class="transition duration-300 hover:bg-teal-50"
+        >
+          <td class="p-4">{{ index }}</td>
+          <td class="p-4">{{ user.u_nama }}</td>
+          <td class="p-4 uppercase">{{ user.u_role }}</td>
         </tr>
       </tbody>
     </table>
   </div>
 </template>
+
+<script>
+import { useDosenStore } from "@/stores/dosenStore";
+import { computed, onMounted } from "vue";
+import { useRoute } from "vue-router";
+
+export default {
+  setup() {
+    const DOSEN_STORE = useDosenStore();
+    const ROUTE = useRoute();
+
+    onMounted(() => {
+      const classId = ROUTE.params.id;
+      DOSEN_STORE.getAllUser(classId);
+    });
+
+    const userList = computed(() => DOSEN_STORE.userList);
+
+    return {
+      DOSEN_STORE,
+      userList,
+      ROUTE,
+    };
+  },
+  props: {
+    List: {
+      type: String,
+      default: "Class",
+    },
+  },
+};
+</script>

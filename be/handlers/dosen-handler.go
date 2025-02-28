@@ -125,6 +125,24 @@ func (h *DosenHandler) DeleteClass(c *fiber.Ctx) error {
 	})
 }
 
+func (h *DosenHandler) GetAllUser(c *fiber.Ctx) error {
+	classID := c.Params("id")
+
+	if classID == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "ID kelas harus diisi"})
+	}
+
+	users, err := h.dosenRepository.GetAllUserInClass(classID)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	return c.JSON(fiber.Map{
+		"message": "Success",
+		"data":    users,
+	})
+}
+
 func (h *DosenHandler) CreateTask(c *fiber.Ctx) error {
 	userToken := c.Locals("user")
 	if userToken == nil {

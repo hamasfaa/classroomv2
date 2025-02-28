@@ -10,6 +10,7 @@ type DosenRepository interface {
 	GetAllClass(userUID string) ([]entities.Kelas, error)
 	CreateClass(kelas *entities.Kelas) error
 	AddUserToClass(userUID string, classID string) error
+	GetAllUserInClass(classID string) ([]entities.User, error)
 	DeleteClass(classID string) error
 	GetAllTask(userUID string, classID string) ([]entities.TugasDosen, error)
 	GetAllMeeting() ([]entities.AbsenDosen, error)
@@ -53,6 +54,17 @@ func (r *dosenRepositoryGorm) AddUserToClass(userUID string, classID string) err
 	}
 
 	return nil
+}
+
+func (r *dosenRepositoryGorm) GetAllUserInClass(classID string) ([]entities.User, error) {
+	var users []entities.User
+
+	query := `SELECT * FROM users U INNER JOIN user_kelas UK ON U.uid = UK.user_uid WHERE UK.kelas_k_id = ?`
+	if err := r.db.Raw(query, classID).Scan(&users).Error; err != nil {
+		return nil, err
+	}
+
+	return users, nil
 }
 
 func (r *dosenRepositoryGorm) DeleteClass(classID string) error {
