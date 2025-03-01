@@ -11,6 +11,7 @@ type DosenRepository interface {
 	CreateClass(kelas *entities.Kelas) error
 	AddUserToClass(userUID string, classID string) error
 	GetAllUserInClass(classID string) ([]entities.User, error)
+	GetDetailClass(classID string) (entities.Kelas, error)
 	DeleteClass(classID string) error
 	GetAllTask(userUID string, classID string) ([]entities.TugasDosen, error)
 	GetAllMeeting() ([]entities.AbsenDosen, error)
@@ -65,6 +66,16 @@ func (r *dosenRepositoryGorm) GetAllUserInClass(classID string) ([]entities.User
 	}
 
 	return users, nil
+}
+
+func (r *dosenRepositoryGorm) GetDetailClass(classID string) (entities.Kelas, error) {
+	var kelas entities.Kelas
+
+	if err := r.db.Where("k_id = ?", classID).First(&kelas).Error; err != nil {
+		return entities.Kelas{}, err
+	}
+
+	return kelas, nil
 }
 
 func (r *dosenRepositoryGorm) DeleteClass(classID string) error {

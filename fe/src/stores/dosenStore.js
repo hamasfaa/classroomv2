@@ -8,7 +8,8 @@ export const useDosenStore = defineStore('dosen', {
         errorMessage: null,
         classList: [],
         taskList: [],
-        userList: []
+        userList: [],
+        classData: []
     }),
     actions: {
         async addClass(namaKelas, mataKuliah) {
@@ -61,6 +62,7 @@ export const useDosenStore = defineStore('dosen', {
             try {
                 const response = await api.get(`dosen/detailClass/${id}`);
                 this.userList = response.data.data;
+                this.classData = response.data.class;
             } catch (error) {
                 if (error.response && error.response.data) {
                     this.errorMessage = error.response.data.error;

@@ -125,7 +125,7 @@ func (h *DosenHandler) DeleteClass(c *fiber.Ctx) error {
 	})
 }
 
-func (h *DosenHandler) GetAllUser(c *fiber.Ctx) error {
+func (h *DosenHandler) GetDetailClass(c *fiber.Ctx) error {
 	classID := c.Params("id")
 
 	if classID == "" {
@@ -137,9 +137,15 @@ func (h *DosenHandler) GetAllUser(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
 
+	class, err := h.dosenRepository.GetDetailClass(classID)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+	}
+
 	return c.JSON(fiber.Map{
 		"message": "Success",
 		"data":    users,
+		"class":   class,
 	})
 }
 
