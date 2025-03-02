@@ -203,7 +203,7 @@ func (h *DosenHandler) CreateTask(c *fiber.Ctx) error {
 			})
 		}
 
-		filePath := fmt.Sprintf("uploads/tasks/%s/%s", newTUID.String(), fileData.TFNama)
+		filePath := fmt.Sprintf("uploads/tasks/%s/%s", task.TDJudul, fileData.TFNama)
 
 		os.MkdirAll(filepath.Dir(filePath), 0755)
 

@@ -3,8 +3,15 @@ import BannerClass from "@/components/dosen/BannerClass.vue";
 import Navigation from "@/components/main/Navigation.vue";
 import Class from "@/components/dosen/Class.vue";
 import { useGeneralStore } from "@/stores/generalStore";
+import { useDosenStore } from "@/stores/dosenStore";
+import { onMounted } from "vue";
 
 const GENERAL_STORE = useGeneralStore();
+const DOSEN_STORE = useDosenStore();
+
+onMounted(() => {
+  DOSEN_STORE.getAllClass();
+});
 </script>
 
 <template>

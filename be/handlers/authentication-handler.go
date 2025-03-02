@@ -6,6 +6,7 @@ import (
 	"be/token"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/session"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
@@ -86,6 +87,14 @@ func (h *AuthenticationHandler) LoginUser(c *fiber.Ctx) error {
 		})
 	}
 
+	sess := c.Locals("session").(*session.Session)
+	sess.Set("user_id", user.UID)
+	if err := sess.Save(); err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": err.Error(),
+		})
+	}
+
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"token":         accessToken,
 		"refresh_token": refreshToken,
@@ -94,6 +103,13 @@ func (h *AuthenticationHandler) LoginUser(c *fiber.Ctx) error {
 }
 
 func (h *AuthenticationHandler) LogoutUser(c *fiber.Ctx) error {
+	sess := c.Locals("session").(*session.Session)
+	if err := sess.Destroy(); err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": err.Error(),
+		})
+	}
+
 	return c.JSON(fiber.Map{
 		"message": "Logout berhasil",
 	})
@@ -147,5 +163,27 @@ func (h *AuthenticationHandler) RefreshToken(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{
 		"token":   newToken,
 		"message": "Refresh token berhasil",
+	})
+}
+
+func (h *AuthenticationHandler) Whoami(c *fiber.Ctx) error {
+	sess := c.Locals("session").(*session.Session)
+	userID := sess.Get("user_id")
+	if userID == nil {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"error": "Belum login atau session tidak valid",
+		})
+	}
+
+	user, err := h.authenticationRepository.GetUserByUID(userID.(string))
+	if err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"error": "User not found",
+		})
+	}
+
+	return c.JSON(fiber.Map{
+		"message": "Anda sudah login",
+		"user":    user,
 	})
 }

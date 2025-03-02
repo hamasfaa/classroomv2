@@ -40,15 +40,11 @@
 
 <script>
 import { useDosenStore } from "@/stores/dosenStore";
-import { computed, onMounted } from "vue";
+import { computed } from "vue";
 
 export default {
   setup() {
     const DOSEN_STORE = useDosenStore();
-
-    onMounted(() => {
-      DOSEN_STORE.getAllClass();
-    });
 
     const classList = computed(() => DOSEN_STORE.classList);
 

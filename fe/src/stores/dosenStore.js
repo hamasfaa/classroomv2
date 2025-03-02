@@ -13,6 +13,8 @@ export const useDosenStore = defineStore('dosen', {
     }),
     actions: {
         async addClass(namaKelas, mataKuliah) {
+            const AUTH_STORE = useAuthStore();
+            await AUTH_STORE.checkSession();
             try {
                 const response = await api.post('dosen/addClass', { k_nama_kelas: namaKelas, k_mata_kuliah: mataKuliah });
             } catch (error) {
@@ -20,7 +22,6 @@ export const useDosenStore = defineStore('dosen', {
                     this.errorMessage = error.response.data.error;
                     const AUTH_STORE = useAuthStore();
                     await AUTH_STORE.refresh();
-
                     await api.post('dosen/addClass', { k_nama_kelas: namaKelas, k_mata_kuliah: mataKuliah });
                     this.errorMessage = error.response.data.error;
                 } else {
@@ -29,6 +30,8 @@ export const useDosenStore = defineStore('dosen', {
             }
         },
         async getAllClass() {
+            const AUTH_STORE = useAuthStore();
+            await AUTH_STORE.checkSession();
             try {
                 const response = await api.get('dosen/class');
                 this.classList = response.data.data;
@@ -44,6 +47,8 @@ export const useDosenStore = defineStore('dosen', {
             }
         },
         async deleteClass(id) {
+            const AUTH_STORE = useAuthStore();
+            await AUTH_STORE.checkSession();
             try {
                 const response = await api.delete(`dosen/deleteClass/${id}`);
             } catch (error) {
@@ -59,6 +64,8 @@ export const useDosenStore = defineStore('dosen', {
             }
         },
         async getAllUser(id) {
+            const AUTH_STORE = useAuthStore();
+            await AUTH_STORE.checkSession();
             try {
                 const response = await api.get(`dosen/detailClass/${id}`);
                 this.userList = response.data.data;
@@ -76,6 +83,8 @@ export const useDosenStore = defineStore('dosen', {
             }
         },
         async addTask(namaTugas, deskripsi, deadline, files, idClass) {
+            const AUTH_STORE = useAuthStore();
+            await AUTH_STORE.checkSession();
             const isoDate = new Date(deadline).toISOString();
 
             const filePromises = files.map(file => {
@@ -109,6 +118,8 @@ export const useDosenStore = defineStore('dosen', {
             }
         },
         async getAllTask(idClass) {
+            const AUTH_STORE = useAuthStore();
+            await AUTH_STORE.checkSession();
             try {
                 const response = await api.get(`dosen/manageTask/${idClass}`);
                 this.taskList = response.data.data;
@@ -125,6 +136,8 @@ export const useDosenStore = defineStore('dosen', {
             }
         },
         async updateTaskStatus(idTask, status, classId) {
+            const AUTH_STORE = useAuthStore();
+            await AUTH_STORE.checkSession();
             try {
                 // console.log(idTask, status, classId);
                 await api.put(`dosen/updateTaskStatus/${idTask}`, { td_status: status });

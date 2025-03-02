@@ -76,6 +76,24 @@ export const useAuthStore = defineStore('auth', {
                 console.error("Gagal refresh token:", error);
             }
         },
+        async checkSession() {
+            try {
+                const response = await api.get('protected');
+                if (response.data && response.data.user) {
+                    this.user = response.data.user;
+                    return true;
+                }
+                return false;
+            } catch (error) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('refresh_token');
+                this.token = null;
+                this.refreshToken = null;
+                this.user = null;
+                this.role = null;
+                return false;
+            }
+        },
         logout() {
             this.logoutFromServer();
 

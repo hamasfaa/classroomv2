@@ -5,7 +5,6 @@ import (
 	"be/middlewares"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/golang-jwt/jwt/v5"
 )
 
 func SetupRoutes(app *fiber.App, authenticationHandler *handlers.AuthenticationHandler, dosenHandler *handlers.DosenHandler, jwtSecret string) {
@@ -22,20 +21,7 @@ func SetupRoutes(app *fiber.App, authenticationHandler *handlers.AuthenticationH
 	api.Post("/logout", authenticationHandler.LogoutUser)
 	api.Post("/refreshToken", authenticationHandler.RefreshToken)
 
-	api.Get("/protected", func(c *fiber.Ctx) error {
-		tokenString := c.Get("Authorization")
-		if tokenString == "" {
-			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Belum login atau token tidak valid"})
-		}
-		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-			return []byte(jwtSecret), nil
-		})
-		if err != nil || !token.Valid {
-			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Token tidak valid"})
-		}
-		claims := token.Claims.(jwt.MapClaims)
-		return c.JSON(fiber.Map{"message": "Anda sudah login", "uid": claims["uid"]})
-	})
+	api.Get("/protected", authenticationHandler.Whoami)
 
 	apiDosen.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("Hello, Dosen!")

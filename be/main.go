@@ -3,6 +3,7 @@ package main
 import (
 	"be/config"
 	"be/handlers"
+	"be/middlewares"
 	"be/repositories"
 	"be/routes"
 
@@ -13,6 +14,8 @@ import (
 
 func main() {
 	app := fiber.New()
+
+	app.Use(middlewares.SessionMiddleware())
 
 	app.Use(cors.New(cors.Config{
 		AllowOrigins:     "http://localhost:3000, http://localhost:5173",
