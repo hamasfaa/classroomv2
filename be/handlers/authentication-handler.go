@@ -95,10 +95,15 @@ func (h *AuthenticationHandler) LoginUser(c *fiber.Ctx) error {
 		})
 	}
 
+	publicUser := entities.PublicUser{
+		UNama: user.UNama,
+	}
+
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"token":         accessToken,
 		"refresh_token": refreshToken,
 		"message":       "Login berhasil, session disimpan",
+		"user":          publicUser,
 	})
 }
 

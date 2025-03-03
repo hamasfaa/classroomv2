@@ -12,7 +12,8 @@ export const useAuthStore = defineStore('auth', {
         token: null,
         refreshToken: null,
         role: null,
-        errorMessage: null
+        errorMessage: null,
+        nama: null,
     }),
     actions: {
         async login(email, password) {
@@ -20,6 +21,7 @@ export const useAuthStore = defineStore('auth', {
                 const response = await api.post('login', { email, password });
                 this.token = response.data.token;
                 this.refreshToken = response.data.refresh_token;
+                this.nama = response.data.user.u_nama;
                 localStorage.setItem('token', this.token);
                 localStorage.setItem('refresh_token', this.refreshToken);
 

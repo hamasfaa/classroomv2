@@ -89,7 +89,7 @@
     <div class="flex items-center space-x-4 p-6 mt-auto">
       <img src="" alt="Foto Profil" class="rounded-xl w-12 h-12" />
       <div v-if="!GENERAL_STORE.isSidebarOpen" class="flex flex-col">
-        <span class="font-bold text-xl text-white">JOKO</span>
+        <span class="font-bold text-xl text-white">{{ nama }}</span>
         <span class="text-white">Dosen</span>
       </div>
     </div>
@@ -99,6 +99,7 @@
 <script>
 import { useAuthStore } from "@/stores/authStore";
 import { useGeneralStore } from "@/stores/generalStore";
+import { onMounted } from "vue";
 
 export default {
   setup() {
@@ -120,7 +121,13 @@ export default {
         { name: "Pengaturan", to: "/settings", icon: "settings" },
         // { name: "Keluar", to: "/login", icon: "logout" },
       ],
+      nama: "",
+      role: "",
     };
+  },
+  mounted() {
+    this.nama = this.AUTH_STORE.nama;
+    this.role = this.AUTH_STORE.role;
   },
 };
 </script>

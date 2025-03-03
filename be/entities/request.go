@@ -27,3 +27,7 @@ type FileData struct {
 type Status struct {
 	Status bool `json:"td_status"`
 }
+
+type PublicUser struct {
+	UNama string `json:"u_nama"`
+}
