@@ -14,8 +14,10 @@ type DosenRepository interface {
 	GetDetailClass(classID string) (entities.Kelas, error)
 	DeleteClass(classID string) error
 	GetAllTask(userUID string, classID string) ([]entities.TugasDosen, error)
+	GetTaskByID(taskID string) (entities.TugasDosen, error)
 	GetAllMeeting() ([]entities.AbsenDosen, error)
 	CreateTaskWithFiles(task *entities.TugasDosen, files []entities.TugasFile) error
+	DeleteTaskWithFiles(taskID string) error
 	UpdateStatusTask(taskID string, status bool) error
 }
 
@@ -118,6 +120,16 @@ func (r *dosenRepositoryGorm) GetAllTask(userUID string, classUID string) ([]ent
 	return tugas, nil
 }
 
+func (r *dosenRepositoryGorm) GetTaskByID(taskID string) (entities.TugasDosen, error) {
+	var tugas entities.TugasDosen
+
+	if err := r.db.Where("td_id = ?", taskID).First(&tugas).Error; err != nil {
+		return entities.TugasDosen{}, err
+	}
+
+	return tugas, nil
+}
+
 func (r *dosenRepositoryGorm) GetAllMeeting() ([]entities.AbsenDosen, error) {
 	var absen []entities.AbsenDosen
 
@@ -153,6 +165,20 @@ func (r *dosenRepositoryGorm) CreateTaskWithFiles(task *entities.TugasDosen, fil
 			if err := tx.Create(&files).Error; err != nil {
 				return err
 			}
+		}
+
+		return nil
+	})
+}
+
+func (r *dosenRepositoryGorm) DeleteTaskWithFiles(taskID string) error {
+	return r.db.Transaction(func(tx *gorm.DB) error {
+		if err := tx.Exec("DELETE FROM tugas_files WHERE tugas_td_id = ?", taskID).Error; err != nil {
+			return err
+		}
+
+		if err := tx.Exec("DELETE FROM tugas_dosens WHERE td_id = ?", taskID).Error; err != nil {
+			return err
 		}
 
 		return nil

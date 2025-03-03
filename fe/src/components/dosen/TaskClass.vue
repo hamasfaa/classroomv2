@@ -34,6 +34,7 @@
                 {{ tugas.td_status == 0 ? "Tampilkan" : "Sembunyikan" }}
               </button>
               <button
+                @click="handleDeleteTask(tugas.td_id)"
                 class="relative bg-red-700 text-white text-lg px-4 py-2 w-fit h-fit rounded-xl border hover:bg-white hover:border-red-500 hover:text-red-500 cursor-pointer"
               >
                 Hapus
@@ -56,11 +57,6 @@ export default {
     const DOSEN_STORE = useDosenStore();
     const ROUTE = useRoute();
 
-    onMounted(() => {
-      const classId = ROUTE.params.id;
-      DOSEN_STORE.getAllTask(classId);
-    });
-
     const taskList = computed(() => DOSEN_STORE.taskList);
 
     return { DOSEN_STORE, taskList, ROUTE };
@@ -72,6 +68,10 @@ export default {
     async handleTaskStatus(taskId, taskStatus) {
       const classId = this.ROUTE.params.id;
       await this.DOSEN_STORE.updateTaskStatus(taskId, !taskStatus, classId);
+    },
+    async handleDeleteTask(taskId) {
+      const classId = this.ROUTE.params.id;
+      await this.DOSEN_STORE.deleteTask(taskId, classId);
     },
   },
 };

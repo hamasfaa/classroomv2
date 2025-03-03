@@ -154,6 +154,25 @@ export const useDosenStore = defineStore('dosen', {
                     this.errorMessage = "An error occurred during updating task status.";
                 }
             }
+        },
+        async deleteTask(idTask, classId) {
+            const AUTH_STORE = useAuthStore();
+            await AUTH_STORE.checkSession();
+            try {
+                await api.delete(`dosen/deleteTask/${idTask}`);
+                await this.getAllTask(classId);
+            } catch (error) {
+                if (error.response && error.response.data) {
+                    this.errorMessage = error.response.data.error;
+                    const AUTH_STORE = useAuthStore();
+                    await AUTH_STORE.refresh();
+                    await api.delete(`dosen/deleteTask/${idTask}`);
+                    await this.getAllTask(classId);
+                    this.errorMessage = error.response.data.error;
+                } else {
+                    this.errorMessage = "An error occurred during deleting task.";
+                }
+            }
         }
     }
 });

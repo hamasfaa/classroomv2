@@ -232,6 +232,34 @@ func (h *DosenHandler) CreateTask(c *fiber.Ctx) error {
 	})
 }
 
+func (h *DosenHandler) DeleteTask(c *fiber.Ctx) error {
+	taskID := c.Params("id")
+
+	if taskID == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "ID tugas harus diisi"})
+	}
+
+	taskDetail, err := h.dosenRepository.GetTaskByID(taskID)
+	if err != nil {
+		fmt.Printf("Warning: gagal mendapatkan detail task: %v\n", err)
+	}
+
+	if err := h.dosenRepository.DeleteTaskWithFiles(taskID); err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	if taskDetail.TDJudul != "" {
+		dirPath := fmt.Sprintf("uploads/tasks/%s", taskDetail.TDJudul)
+		if err := os.RemoveAll(dirPath); err != nil {
+			fmt.Printf("Warning: gagal menghapus direktori %s: %v\n", dirPath, err)
+		}
+	}
+
+	return c.JSON(fiber.Map{
+		"message": "Tugas berhasil dihapus",
+	})
+}
+
 func (h *DosenHandler) GetAllTask(c *fiber.Ctx) error {
 	userToken := c.Locals("user")
 	if userToken == nil {

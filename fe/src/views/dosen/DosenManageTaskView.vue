@@ -3,8 +3,18 @@ import BannerTaskClass from "@/components/dosen/BannerTaskClass.vue";
 import Navigation from "@/components/main/Navigation.vue";
 import TaskClass from "@/components/dosen/TaskClass.vue";
 import { useGeneralStore } from "@/stores/generalStore";
+import { useDosenStore } from "@/stores/dosenStore";
+import { useRoute } from "vue-router";
+import { onMounted } from "vue";
 
 const GENERAL_STORE = useGeneralStore();
+const DOSEN_STORE = useDosenStore();
+const ROUTE = useRoute();
+
+onMounted(() => {
+  const classId = ROUTE.params.id;
+  DOSEN_STORE.getAllTask(classId);
+});
 </script>
 
 <template>
