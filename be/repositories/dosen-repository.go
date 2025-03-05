@@ -16,6 +16,7 @@ type DosenRepository interface {
 	GetAllTask(userUID string, classID string) ([]entities.TugasDosen, error)
 	GetTaskByID(taskID string) (entities.TugasDosen, error)
 	GetAllMeeting() ([]entities.AbsenDosen, error)
+	CreateMeeting(meeting *entities.AbsenDosen) error
 	CreateTaskWithFiles(task *entities.TugasDosen, files []entities.TugasFile) error
 	DeleteTaskWithFiles(taskID string) error
 	UpdateStatusTask(taskID string, status bool) error
@@ -138,6 +139,14 @@ func (r *dosenRepositoryGorm) GetAllMeeting() ([]entities.AbsenDosen, error) {
 	}
 
 	return absen, nil
+}
+
+func (r *dosenRepositoryGorm) CreateMeeting(meeting *entities.AbsenDosen) error {
+	if err := r.db.Create(meeting).Error; err != nil {
+		return err
+	}
+
+	return nil
 }
 
 //not safety without transaction

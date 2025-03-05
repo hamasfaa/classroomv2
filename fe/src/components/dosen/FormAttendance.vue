@@ -1,6 +1,6 @@
 <template>
   <div class="bg-white shadow-lg rounded-lg p-8">
-    <form method="POST">
+    <form @submit.prevent="handleAddAttendance">
       <div class="mb-6">
         <label
           for="pertemuan"
@@ -9,8 +9,7 @@
         >
         <input
           type="number"
-          id="pertemuan"
-          name="pertemuan"
+          v-model="pertemuan"
           class="border border-teal-300 rounded-lg w-full p-4 focus:outline-none focus:border-teal-500 transition duration-300"
           min="1"
           placeholder="Masukkan nomor pertemuan"
@@ -24,8 +23,7 @@
         >
         <textarea
           type="text"
-          id="deskripsi"
-          name="deskripsi"
+          v-model="deskripsi"
           class="border border-teal-300 rounded-lg w-full p-4 focus:outline-none focus:border-teal-500 transition duration-300"
           placeholder="Masukkan deskripsi"
           rows="4"
@@ -39,8 +37,7 @@
         >
         <input
           type="date"
-          id="tanggal"
-          name="tanggal"
+          v-model="tanggal"
           class="border border-teal-300 rounded-lg w-full p-4 focus:outline-none focus:border-teal-500 transition duration-300"
         />
       </div>
@@ -53,5 +50,41 @@
         </button>
       </div>
     </form>
+    <div v-if="errorMessage" class="text-red-700">{{ errorMessage }}</div>
   </div>
 </template>
+
+<script>
+import { useDosenStore } from "@/stores/dosenStore";
+
+export default {
+  setup() {
+    const DOSEN_STORE = useDosenStore();
+    return { DOSEN_STORE };
+  },
+  data() {
+    return {
+      pertemuan: "",
+      deskripsi: "",
+      tanggal: "",
+      errorMessage: "",
+    };
+  },
+  methods: {
+    async handleAddAttendance() {
+      const classId = this.$route.params.id;
+      await this.DOSEN_STORE.addAttendance(
+        classId,
+        this.pertemuan,
+        this.deskripsi,
+        this.tanggal
+      );
+      if (this.DOSEN_STORE.errorMessage) {
+        this.errorMessage = this.DOSEN_STORE.errorMessage;
+      } else {
+        this.$router.push("/dosen/class");
+      }
+    },
+  },
+};
+</script>

@@ -315,3 +315,61 @@ func (h *DosenHandler) UpdateStatusTask(c *fiber.Ctx) error {
 		"message": "Status tugas berhasil diubah",
 	})
 }
+
+func (h *DosenHandler) CreateMeeting(c *fiber.Ctx) error {
+	meeting := new(entities.AbsenDosen)
+
+	if err := c.BodyParser(meeting); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	if meeting.ADDeskripsi == "" || meeting.ADPertemuan == 0 {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Semua field harus diisi"})
+	}
+
+	classID := c.Params("id")
+	if classID == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "KelasID tidak ditemukan"})
+	}
+	meeting.KelasKID = classID
+
+	newMUID, err := uuid.NewRandom()
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to generate UUID"})
+	}
+	meeting.ADID = newMUID.String()
+
+	const charset = "0123456789"
+
+	rand.Seed(time.Now().UnixNano())
+	kode := make([]byte, 6)
+	for i := 0; i < 6; i++ {
+		kode[i] = charset[rand.Intn(len(charset))]
+	}
+	meeting.ADKode = string(kode)
+
+	userToken := c.Locals("user")
+	if userToken == nil {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Unauthorized"})
+	}
+
+	token := userToken.(*jwt.Token)
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid token claims"})
+	}
+
+	userUID, ok := claims["uid"].(string)
+	if !ok {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid token claims"})
+	}
+	meeting.UserUID = userUID
+
+	if err := h.dosenRepository.CreateMeeting(meeting); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
+		"message": "Pertemuan berhasil dibuat",
+	})
+}

@@ -173,6 +173,27 @@ export const useDosenStore = defineStore('dosen', {
                     this.errorMessage = "An error occurred during deleting task.";
                 }
             }
+        },
+        async addAttendance(classId, pertemuan, deskripsi, tanggal) {
+            const AUTH_STORE = useAuthStore();
+            await AUTH_STORE.checkSession();
+            const isoDate = new Date(tanggal).toISOString();
+
+            try {
+                await api.post(`dosen/addMeeting/${classId}`, { ad_pertemuan: pertemuan, ad_deskripsi: deskripsi, ad_tanggal_dibuat: isoDate });
+                // ada get all meeting
+            } catch (error) {
+                if (error.response && error.response.data) {
+                    this.errorMessage = error.response.data.error;
+                    const AUTH_STORE = useAuthStore();
+                    await AUTH_STORE.refresh();
+                    await api.post(`dosen/addMeeting/${classId}`, { ad_pertemuan: pertemuan, ad_deskripsi: deskripsi, ad_tanggal_dibuat: isoDate });
+                    // ada get all meeting
+                    this.errorMessage = error.response.data.error;
+                } else {
+                    this.errorMessage = "An error occurred during adding attendance.";
+                }
+            }
         }
     }
 });

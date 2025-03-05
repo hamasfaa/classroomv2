@@ -11,7 +11,7 @@
     <router-link
       v-if="add"
       class="bg-dark-teal text-white text-lg px-4 py-2 h-fit rounded-xl border hover:bg-white hover:border-light-teal hover:text-light-teal transition duration-300"
-      to="/dosen/addAttendance"
+      :to="`/dosen/addAttendance/${$route.params.id}`"
     >
       Tambah Pertemuan
     </router-link>

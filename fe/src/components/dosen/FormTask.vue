@@ -140,7 +140,7 @@ export default {
 
     async handleAddTask() {
       const classId = this.$route.params.id;
-      console.log(this.selectedFiles);
+      // console.log(this.selectedFiles);
       await this.DOSEN_STORE.addTask(
         this.namaTugas,
         this.deskripsi,

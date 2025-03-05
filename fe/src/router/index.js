@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
 import LoginView from '@/views/LoginView.vue'
 import RegisterView from '@/views/RegisterView.vue'
 import DosenView from '@/views/dosen/DosenView.vue'
@@ -105,7 +104,7 @@ const router = createRouter({
 
     },
     {
-      path: '/dosen/addAttendance',
+      path: '/dosen/addAttendance/:id',
       name: 'add-attendance',
       component: DosenAddAttendanceView,
       meta: { requiresAuth: true, role: 'dosen' }
