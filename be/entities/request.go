@@ -29,5 +29,11 @@ type Status struct {
 }
 
 type PublicUser struct {
-	UNama string `json:"u_nama"`
+	UNama         string    `json:"u_nama"`
+	UEmail        string    `json:"u_email"`
+	URole         string    `json:"u_role"`
+	UTanggalLahir time.Time `json:"u_tanggal_lahir"`
+	UNoPonsel     string    `json:"u_no_ponsel"`
+	UAlamat       string    `json:"u_alamat"`
+	UFoto         string    `json:"u_foto"`
 }

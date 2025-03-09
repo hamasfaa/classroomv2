@@ -95,15 +95,10 @@ func (h *AuthenticationHandler) LoginUser(c *fiber.Ctx) error {
 		})
 	}
 
-	publicUser := entities.PublicUser{
-		UNama: user.UNama,
-	}
-
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"token":         accessToken,
 		"refresh_token": refreshToken,
 		"message":       "Login berhasil, session disimpan",
-		"user":          publicUser,
 	})
 }
 
@@ -187,8 +182,18 @@ func (h *AuthenticationHandler) Whoami(c *fiber.Ctx) error {
 		})
 	}
 
+	publicUser := entities.PublicUser{
+		UNama:         user.UNama,
+		UEmail:        user.UEmail,
+		URole:         user.URole,
+		UTanggalLahir: user.UTanggalLahir,
+		UNoPonsel:     user.UNoPonsel,
+		UAlamat:       user.UAlamat,
+		UFoto:         user.UFoto,
+	}
+
 	return c.JSON(fiber.Map{
 		"message": "Anda sudah login",
-		"user":    user,
+		"user":    publicUser,
 	})
 }

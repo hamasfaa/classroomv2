@@ -4,6 +4,7 @@ import { ref, onMounted, onUnmounted, watch } from "vue";
 import { initFlowbite } from "flowbite";
 import Navigation from "./components/main/Navigation.vue";
 import Logout from "./components/main/Logout.vue";
+import { useAuthStore } from "./stores/authStore";
 
 const isMobile = ref(window.innerWidth <= 768);
 
@@ -24,10 +25,12 @@ export default {
   },
   setup() {
     const route = useRoute();
+    const AUTH_STORE = useAuthStore();
 
     onMounted(() => {
       window.addEventListener("resize", handleResize);
       initFlowbite();
+      AUTH_STORE.checkSession();
     });
 
     onUnmounted(() => {

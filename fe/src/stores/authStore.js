@@ -9,11 +9,10 @@ import { ref } from "vue"
 export const useAuthStore = defineStore('auth', {
     state: () => ({
         user: null,
+        userData: {},
         token: null,
         refreshToken: null,
-        role: null,
         errorMessage: null,
-        nama: null,
     }),
     actions: {
         async login(email, password) {
@@ -21,7 +20,6 @@ export const useAuthStore = defineStore('auth', {
                 const response = await api.post('login', { email, password });
                 this.token = response.data.token;
                 this.refreshToken = response.data.refresh_token;
-                this.nama = response.data.user.u_nama;
                 localStorage.setItem('token', this.token);
                 localStorage.setItem('refresh_token', this.refreshToken);
 
@@ -82,7 +80,7 @@ export const useAuthStore = defineStore('auth', {
             try {
                 const response = await api.get('protected');
                 if (response.data && response.data.user) {
-                    this.user = response.data.user;
+                    this.userData = response.data.user;
                     return true;
                 }
                 return false;
@@ -91,6 +89,7 @@ export const useAuthStore = defineStore('auth', {
                 localStorage.removeItem('refresh_token');
                 this.token = null;
                 this.refreshToken = null;
+                this.userData = {};
                 this.user = null;
                 this.role = null;
                 return false;
