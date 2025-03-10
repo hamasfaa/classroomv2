@@ -31,7 +31,7 @@ func SetupRoutes(app *fiber.App, authenticationHandler *handlers.AuthenticationH
 	apiDosen.Delete("/deleteClass/:id", dosenHandler.DeleteClass)
 	apiDosen.Post("/addTask/:id", dosenHandler.CreateTask)
 	apiDosen.Get("/manageTask/:id", dosenHandler.GetAllTask)
-	apiDosen.Put("/updateTaskStatus/:id", dosenHandler.UpdateStatusTask)
+	apiDosen.Patch("/updateTaskStatus/:id", dosenHandler.UpdateStatusTask)
 	apiDosen.Delete("/deleteTask/:id", dosenHandler.DeleteTask)
 	apiDosen.Get("/detailClass/:id", dosenHandler.GetDetailClass)
 	apiDosen.Post("/addMeeting/:id", dosenHandler.CreateMeeting)

@@ -140,14 +140,14 @@ export const useDosenStore = defineStore('dosen', {
             await AUTH_STORE.checkSession();
             try {
                 // console.log(idTask, status, classId);
-                await api.put(`dosen/updateTaskStatus/${idTask}`, { td_status: status });
+                await api.patch(`dosen/updateTaskStatus/${idTask}`, { td_status: status });
                 await this.getAllTask(classId);
             } catch (error) {
                 if (error.response && error.response.data) {
                     this.errorMessage = error.response.data.error;
                     const AUTH_STORE = useAuthStore();
                     await AUTH_STORE.refresh();
-                    await api.put(`dosen/updateTaskStatus/${idTask}`, { td_status: status });
+                    await api.patch(`dosen/updateTaskStatus/${idTask}`, { td_status: status });
                     await this.getAllTask(classId);
                     this.errorMessage = error.response.data.error;
                 } else {
