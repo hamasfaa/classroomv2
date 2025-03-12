@@ -12,7 +12,9 @@
           >
             <div class="flex items-center">
               <span class="font-bold text-lg text-gray-800">Email:</span>
-              <span class="text-gray-600 text-lg ml-2">haha</span>
+              <span class="text-gray-600 text-lg ml-2">{{
+                AUTH_STORE.userData.u_email
+              }}</span>
             </div>
             <button
               type="button"
@@ -47,7 +49,7 @@
           >
             <div class="flex items-center">
               <span class="font-bold text-lg text-gray-800">No. Ponsel:</span>
-              <span class="text-gray-600 text-lg ml-2">2021-20-02</span>
+              <span class="text-gray-600 text-lg ml-2">08</span>
             </div>
             <button
               type="button"
@@ -81,7 +83,16 @@
 </template>
 
 <script>
+import { useAuthStore } from "@/stores/authStore";
+
 export default {
+  setup() {
+    const AUTH_STORE = useAuthStore();
+
+    return {
+      AUTH_STORE,
+    };
+  },
   data() {
     return {
       isEditEmail: false,

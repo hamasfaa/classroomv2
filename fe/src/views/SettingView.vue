@@ -4,6 +4,7 @@ import EditPhoto from "@/components/main/EditPhoto.vue";
 import Navigation from "@/components/main/Navigation.vue";
 import Other from "@/components/main/Other.vue";
 import PersonalInformation from "@/components/main/PersonalInformation.vue";
+import { useAuthStore } from "@/stores/authStore";
 import { useGeneralStore } from "@/stores/generalStore";
 
 const GENERAL_STORE = useGeneralStore();

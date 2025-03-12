@@ -10,7 +10,9 @@
           >
             <div class="flex items-center">
               <span class="font-bold text-lg text-gray-800">Nama:</span>
-              <span class="text-gray-600 text-lg ml-2">haha</span>
+              <span class="text-gray-600 text-lg ml-2">{{
+                AUTH_STORE.userData.u_nama
+              }}</span>
             </div>
             <button
               type="button"
@@ -47,7 +49,9 @@
               <span class="font-bold text-lg text-gray-800"
                 >Tanggal Lahir:</span
               >
-              <span class="text-gray-600 text-lg ml-2">2021-20-02</span>
+              <span class="text-gray-600 text-lg ml-2">{{
+                new Date(AUTH_STORE.userData.u_tanggal_lahir).getDate()
+              }}</span>
             </div>
             <button
               type="button"
@@ -81,7 +85,16 @@
 </template>
 
 <script>
+import { useAuthStore } from "@/stores/authStore";
+
 export default {
+  setup() {
+    const AUTH_STORE = useAuthStore();
+
+    return {
+      AUTH_STORE,
+    };
+  },
   data() {
     return {
       isEditName: false,

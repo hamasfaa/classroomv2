@@ -26,8 +26,12 @@
         />
       </div>
       <div class="flex flex-col ml-4 justify-center">
-        <span class="font-bold text-xl text-black md:text-4xl">{{ name }}</span>
-        <span class="text-gray-600 text-md md:text-xl">{{ role }} </span>
+        <span class="font-bold text-xl text-black md:text-4xl">{{
+          AUTH_STORE.userData.u_nama
+        }}</span>
+        <span class="text-gray-600 text-md md:text-xl"
+          >{{ AUTH_STORE.userData.u_role }}
+        </span>
       </div>
     </div>
     <button type="submit" class="hidden">Upload</button>
@@ -36,13 +40,14 @@
 
 <script>
 import { ref, onMounted } from "vue";
+import { useAuthStore } from "@/stores/authStore";
 
 export default {
   setup() {
     // pake store kalo udh jadi be
+    const AUTH_STORE = useAuthStore();
+
     const profileImgSrc = ref("#");
-    const name = ref("joko");
-    const role = ref("dosen");
 
     const fileInput = ref(null);
     const imageUploadForm = ref(null);
@@ -66,9 +71,8 @@ export default {
     };
 
     return {
+      AUTH_STORE,
       profileImgSrc,
-      name,
-      role,
       fileInput,
       imageUploadForm,
       triggerFileInput,
